@@ -1,0 +1,1 @@
+Transformers replace recurrence with self-attention. Multi-head attention lets each token attend to every other token in the sequence, and positional encodings inject order information. The encoder-decoder architecture was introduced in the paper 'Attention Is All You Need' in 2017. Large language models such as GPT are decoder-only transformers trained on next-token prediction.
