@@ -37,6 +37,13 @@ class Settings(BaseSettings):
     # --- General -----------------------------------------------------------
     log_level: str = "INFO"
     device: DeviceChoice = "auto"
+    fallback_on_error: bool = Field(
+        True,
+        description=(
+            "If a configured neural backend fails to load, switch to the documented offline "
+            "fallback (and report it) instead of failing to start."
+        ),
+    )
 
     # --- Paths -------------------------------------------------------------
     data_dir: Path = Path("./data")
