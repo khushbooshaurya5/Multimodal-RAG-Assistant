@@ -11,8 +11,6 @@ pillow>=10.0
 soundfile>=0.12
 pypdf>=4.0
 
-# Qwen2-VL / Qwen2.5-VL image preprocessing helpers
-qwen-vl-utils>=0.0.8
 
 # Configuration / validation
 pydantic>=2.6
