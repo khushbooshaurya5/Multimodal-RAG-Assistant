@@ -49,8 +49,8 @@ machines without GPUs or model access.
 
 - Case-study page (share it from its Share menu before linking publicly): https://claude.ai/artifact/TMmmtWeFNNv697ZQWc72mn
 - Repository: https://github.com/khushbooshaurya5/Multimodal-RAG-Assistant
-- Live demo: `https://huggingface.co/spaces/<your-hf-username>/multimodal-rag-assistant`
-  (create it with `scripts/deploy_hf_space.sh`)
+- Live demo: https://huggingface.co/spaces/khushbooshaurya5/multimodal-rag-assistant
+  (deployed with `scripts/deploy_hf_space.sh`)
 - Evaluation report: `reports/eval_report_offline.md`
 - Architecture: `docs/ARCHITECTURE.md`
 
@@ -60,5 +60,5 @@ machines without GPUs or model access.
 ### 🧠 Multimodal RAG Assistant
 Qwen-VL + Whisper + FAISS retrieval-augmented generation over text, images and voice.
 Grounded, cited answers · swappable model backends · evaluation harness · 99 tests · CI · Docker.
-[Code](https://github.com/khushbooshaurya5/Multimodal-RAG-Assistant) · [Live demo](https://huggingface.co/spaces/<your-hf-username>/multimodal-rag-assistant)
+[Code](https://github.com/khushbooshaurya5/Multimodal-RAG-Assistant) · [Live demo](https://huggingface.co/spaces/khushbooshaurya5/multimodal-rag-assistant)
 ```

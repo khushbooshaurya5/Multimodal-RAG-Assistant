@@ -19,9 +19,9 @@ similarity scores and a heuristic evidence indicator, so the RAG process is tran
 retrieved sources with page numbers and similarity scores. (Screenshot uses the extractive
 fallback, hence the warning banner; with Qwen-VL configured the answer is model-generated.)*
 
-> **Live demo:** deploy your own copy in a few minutes with `scripts/deploy_hf_space.sh`
-> (see [Deploying a live demo](#deploying-a-live-demo)). Once deployed, link it here:
-> `https://huggingface.co/spaces/<your-hf-username>/multimodal-rag-assistant`.
+> **Live demo:** [huggingface.co/spaces/khushbooshaurya5/multimodal-rag-assistant](https://huggingface.co/spaces/khushbooshaurya5/multimodal-rag-assistant)
+> (CPU Space; the first request after a cold start downloads the models). Deploy your own copy with
+> `scripts/deploy_hf_space.sh`, see [Deploying a live demo](#deploying-a-live-demo).
 
 ---
 
@@ -197,7 +197,7 @@ enough for MiniLM embeddings, Whisper-base and Qwen2-VL-2B on CPU (slow, but rea
 ```bash
 pip install -U "huggingface_hub[cli]"
 huggingface-cli login                                   # or export HF_TOKEN=hf_...
-scripts/deploy_hf_space.sh <your-hf-username>/multimodal-rag-assistant
+scripts/deploy_hf_space.sh khushbooshaurya5/multimodal-rag-assistant
 ```
 
 The script creates the Space, copies the repository with the Space card
