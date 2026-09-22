@@ -47,6 +47,7 @@ machines without GPUs or model access.
 
 ## Links to include
 
+- Case-study page (share it from its Share menu before linking publicly): https://claude.ai/artifact/TMmmtWeFNNv697ZQWc72mn
 - Repository: https://github.com/khushbooshaurya5/Multimodal-RAG-Assistant
 - Live demo: `https://huggingface.co/spaces/<your-hf-username>/multimodal-rag-assistant`
   (create it with `scripts/deploy_hf_space.sh`)
