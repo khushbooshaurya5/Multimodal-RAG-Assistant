@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Environment / secrets
+.env
+*.env.local
+
+# Data and model artifacts (keep directory placeholders)
+data/raw/*
+data/processed/*
+data/index/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/index/.gitkeep
+data/eval/generated/
+models_cache/
+*.faiss
+*.pkl
+
+# Evaluation outputs (the committed offline baseline lives in reports/)
+reports/scratch/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.log

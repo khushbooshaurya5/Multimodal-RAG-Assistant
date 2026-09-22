@@ -1,0 +1,482 @@
+{
+  "created_at": "2026-09-22T00:08:52+00:00",
+  "backends": {
+    "embedder": "hashing:384",
+    "generator": "extractive",
+    "vision": "metadata_only",
+    "transcriber": null,
+    "reranker": null,
+    "device": "cpu",
+    "warnings": [],
+    "fallbacks": {
+      "embedder": true,
+      "generator": true,
+      "vision": true,
+      "audio_disabled": true
+    }
+  },
+  "top_k": 5,
+  "similarity_threshold": 0.15,
+  "num_questions": 16,
+  "num_audio_examples": 0,
+  "aggregate": {
+    "recall@5": 0.8571,
+    "precision@5": 0.5714,
+    "mrr": 0.8214,
+    "groundedness_lexical": 1.0,
+    "citation_validity": 1.0,
+    "expected_phrase_coverage": 0.6429,
+    "no_evidence_detection_rate": 0.5,
+    "llm_judge_groundedness": null,
+    "audio_wer": null,
+    "audio_recall@5": null
+  },
+  "latency_ms": {
+    "generation": {
+      "mean": 0.12,
+      "p50": 0.12,
+      "p95": 0.19
+    },
+    "retrieval": {
+      "mean": 0.54,
+      "p50": 0.52,
+      "p95": 0.85
+    },
+    "total": {
+      "mean": 0.66,
+      "p50": 0.66,
+      "p95": 0.94
+    }
+  },
+  "questions": [
+    {
+      "id": "q01",
+      "question": "What does a pooling layer do in a convolutional neural network?",
+      "relevant_sources": [
+        "cnn_basics.md"
+      ],
+      "retrieved_sources": [
+        "cnn_basics.md",
+        "qwen_vl.md"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.5,
+      "mrr": 1.0,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 0.0,
+      "evidence_level": "moderate",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.8471809999264224,
+        "generation": 0.09644800002206466
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- Convolutional Neural Networks A convolutional neural network (CNN) is a neural network designed for grid-like data such as images. [1]\n- Instead of connecting every input pixel to every neuron, a convolution layer slides a small learned filter (kernel) across the input and produces a feature map. [1]"
+    },
+    {
+      "id": "q02",
+      "question": "Why do CNNs have fewer parameters than fully connected networks?",
+      "relevant_sources": [
+        "cnn_basics.md"
+      ],
+      "retrieved_sources": [
+        "cnn_basics.md"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 1.0,
+      "mrr": 1.0,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 1.0,
+      "evidence_level": "moderate",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.40814199996930256,
+        "generation": 0.0566520000120363
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- Because the same filter is reused at every position, CNNs have far fewer parameters than fully connected networks and they detect a pattern regardless of where it appears. [1]"
+    },
+    {
+      "id": "q03",
+      "question": "Which architecture introduced skip connections?",
+      "relevant_sources": [
+        "cnn_basics.md"
+      ],
+      "retrieved_sources": [
+        "cnn_basics.md",
+        "embeddings.md",
+        "transformers.md"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.3333333333333333,
+      "mrr": 1.0,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 1.0,
+      "evidence_level": "strong",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.44881600001644983,
+        "generation": 0.12304599999879429
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- Well-known CNN architectures include LeNet-5 (1998, handwritten digits), AlexNet (2012, ImageNet), VGG (deep stacks of 3x3 convolutions) and ResNet, which introduced skip connections so that very deep networks remain trainable. [1]\n- Transformers and Attention The transformer architecture, introduced in the 2017 paper \"Attention Is All You Need\", replaces recurrence with self-attention. [3]"
+    },
+    {
+      "id": "q04",
+      "question": "How are attention weights computed in self-attention?",
+      "relevant_sources": [
+        "transformers.md"
+      ],
+      "retrieved_sources": [
+        "transformers.md",
+        "transformers.md",
+        "transformers.md",
+        "transformers.md"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 1.0,
+      "mrr": 1.0,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 1.0,
+      "evidence_level": "moderate",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.5268160000468924,
+        "generation": 0.15332299994952336
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- Transformers and Attention The transformer architecture, introduced in the 2017 paper \"Attention Is All You Need\", replaces recurrence with self-attention. [1]\n- In self-attention every token produces a query, a key and a value vector; the attention weight between two tokens is the scaled dot product of the query and the key, normalised with a softmax, and the output is the weighted sum of the values. [1]\n- The computational cost of self-attention grows quadratically with sequence length, which motivates efficient variants such as sparse attention, linear attention and sliding-window attention. [2]\n- The encoder maps the input sequence to contextual representations; the decoder generates the output one token at a time, attending to both the previously generated tokens (masked self-attention) and the encoder output (cross-attention). [4]\n- Multi-head attention runs several attention functions in parallel with different learned projections, allowing the model to attend to information from different representation subspaces. [3]"
+    },
+    {
+      "id": "q05",
+      "question": "Why do transformers need positional encodings?",
+      "relevant_sources": [
+        "transformers.md"
+      ],
+      "retrieved_sources": [
+        "qwen_vl.md",
+        "transformers.md",
+        "transformers.md",
+        "whisper.md"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.3333333333333333,
+      "mrr": 0.5,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 1.0,
+      "evidence_level": "moderate",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.5151089999344549,
+        "generation": 0.1488689999860071
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- Because attention has no notion of order, positional encodings (sinusoidal or learned) are added to the token embeddings. [2]\n- Transformers and Attention The transformer architecture, introduced in the 2017 paper \"Attention Is All You Need\", replaces recurrence with self-attention. [3]"
+    },
+    {
+      "id": "q06",
+      "question": "How much training data was Whisper trained on and what audio window does it use?",
+      "relevant_sources": [
+        "whisper.md"
+      ],
+      "retrieved_sources": [
+        "transformers.md",
+        "whisper.md"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.5,
+      "mrr": 0.5,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 1.0,
+      "evidence_level": "moderate",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.4183539999758068,
+        "generation": 0.09910800008583465
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- BERT uses only the encoder and is pre-trained with masked language modelling; GPT-style models use only the decoder and are trained with next-token prediction. [1]\n- It is an encoder-decoder transformer trained on 680,000 hours of multilingual and multitask supervised data collected from the web. [2]\n- The computational cost of self-attention grows quadratically with sequence length, which motivates efficient variants such as sparse attention, linear attention and sliding-window attention. [1]\n- Whisper Speech Recognition Whisper is an automatic speech recognition (ASR) system released by OpenAI in 2022. [2]\n- Audio is resampled to 16 kHz, converted to an 80-channel log-Mel spectrogram and processed in 30-second windows. [2]"
+    },
+    {
+      "id": "q07",
+      "question": "What are common failure modes of Whisper?",
+      "relevant_sources": [
+        "whisper.md"
+      ],
+      "retrieved_sources": [
+        "whisper.md",
+        "whisper.md"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 1.0,
+      "mrr": 1.0,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 1.0,
+      "evidence_level": "moderate",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.45782100005453685,
+        "generation": 0.06388600013451651
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- Common failure modes include hallucinated text on silence or music, repeated phrases in long-form transcription, and lower accuracy on low-resource languages and heavy accents. [1]\n- Whisper predicts timestamp tokens, which allows segment-level start and end times to be recovered from the decoded output. [2]"
+    },
+    {
+      "id": "q08",
+      "question": "When does the inner product in FAISS equal cosine similarity?",
+      "relevant_sources": [
+        "faiss_vector_search.md"
+      ],
+      "retrieved_sources": [
+        "faiss_vector_search.md",
+        "faiss_vector_search.md",
+        "transformers.md",
+        "embeddings.md"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.3333333333333333,
+      "mrr": 1.0,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 1.0,
+      "evidence_level": "moderate",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.5306479999944713,
+        "generation": 0.1696829999673355
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- When vectors are L2-normalised, the inner product equals cosine similarity, which is the usual choice for text embeddings. [1]\n- IndexFlatIP performs exhaustive inner-product search. [1]\n- FAISS and Vector Search FAISS (Facebook AI Similarity Search) is a library for efficient similarity search and clustering of dense vectors. [2]\n- Cosine similarity between embeddings is the standard relevance score. [4]\n- It supports exact search with flat indexes and approximate nearest-neighbour search with structures such as inverted file indexes (IVF), product quantisation (PQ) and hierarchical navigable small world graphs (HNSW). [2]"
+    },
+    {
+      "id": "q09",
+      "question": "Does FAISS store document metadata such as page numbers?",
+      "relevant_sources": [
+        "faiss_vector_search.md"
+      ],
+      "retrieved_sources": [
+        "faiss_vector_search.md"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 1.0,
+      "mrr": 1.0,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 1.0,
+      "evidence_level": "moderate",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.31420499999512685,
+        "generation": 0.05427300015981018
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- Any metadata such as the source document, page number or timestamp must be stored separately and joined by id. [1]\n- FAISS stores only vectors and integer ids. [1]"
+    },
+    {
+      "id": "q10",
+      "question": "Why does retrieval-augmented generation reduce hallucination?",
+      "relevant_sources": [
+        "rag_overview.md"
+      ],
+      "retrieved_sources": [
+        "rag_overview.md",
+        "qwen_vl.md",
+        "rag_overview.md",
+        "rag_overview.md",
+        "qwen_vl.md"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 0.5,
+      "mrr": 1.0,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 1.0,
+      "evidence_level": "strong",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.7022920001418242,
+        "generation": 0.18729800012806663
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- Retrieval-Augmented Generation Retrieval-augmented generation (RAG) combines a retriever with a generative language model. [1]\n- For retrieval systems, a vision-language model is used to convert images into searchable text: a structured description covering the image type, visible text, objects and their relationships retrieves much better than a one-line caption. [2]\n- Evaluation of RAG systems typically measures retrieval quality (recall@k, precision@k, mean reciprocal rank) separately from answer quality (faithfulness to the retrieved context, answer relevance and correctness), because a wrong answer can stem from either stage. [3]\n- RAG reduces hallucination because the model can quote evidence instead of relying on parametric memory, it lets the knowledge base be updated without retraining, and it makes answers auditable through citations. [4]\n- It does not eliminate hallucination: a model can still ignore the context or misread it. [4]"
+    },
+    {
+      "id": "q11",
+      "question": "What is the trade-off in choosing a chunk size for RAG?",
+      "relevant_sources": [
+        "rag_overview.md",
+        "embeddings.md"
+      ],
+      "retrieved_sources": [
+        "rag_overview.md",
+        "rag_overview.md",
+        "transformers.md",
+        "cnn_basics.md",
+        "qwen_vl.md"
+      ],
+      "recall_at_k": 0.5,
+      "precision_at_k": 0.25,
+      "mrr": 1.0,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 0.0,
+      "evidence_level": "moderate",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.603830000045491,
+        "generation": 0.19265099990661838
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- Chunk size is a key design choice. [1]\n- RAG reduces hallucination because the model can quote evidence instead of relying on parametric memory, it lets the knowledge base be updated without retraining, and it makes answers auditable through citations. [1]\n- Pooling layers reduce the spatial size of feature maps. [4]\n- Qwen2-VL uses a vision transformer encoder with naive dynamic resolution: an image is split into a variable number of patches proportional to its size instead of being resized to a fixed square, so small text in large documents stays legible. [5]"
+    },
+    {
+      "id": "q12",
+      "question": "What is the difference between a bi-encoder and a cross-encoder?",
+      "relevant_sources": [
+        "embeddings.md",
+        "rag_overview.md"
+      ],
+      "retrieved_sources": [
+        "transformers.md",
+        "transformers.md",
+        "rag_overview.md",
+        "whisper.md",
+        "cnn_basics.md"
+      ],
+      "recall_at_k": 0.5,
+      "precision_at_k": 0.25,
+      "mrr": 0.5,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 0.0,
+      "evidence_level": "strong",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 1.2337410000782256,
+        "generation": 0.21933500011073193
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- The encoder maps the input sequence to contextual representations; the decoder generates the output one token at a time, attending to both the previously generated tokens (masked self-attention) and the encoder output (cross-attention). [1]\n- Hybrid retrieval combines dense embeddings with lexical BM25 scores, and a cross-encoder reranker can re-score the top candidates for higher precision. [3]\n- The original transformer is an encoder-decoder model. [1]\n- Because the encoder sees fixed 30-second windows, longer recordings are transcribed by chunking the audio, optionally with overlapping strides so words at the chunk boundary are not lost. [4]"
+    },
+    {
+      "id": "q13",
+      "question": "How does Qwen2-VL handle images of different sizes?",
+      "relevant_sources": [
+        "qwen_vl.md"
+      ],
+      "retrieved_sources": [
+        "qwen_vl.md"
+      ],
+      "recall_at_k": 1.0,
+      "precision_at_k": 1.0,
+      "mrr": 1.0,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 0.0,
+      "evidence_level": "moderate",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.34124800004065037,
+        "generation": 0.06543499989675183
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- Qwen2-VL and Qwen2.5-VL accept images and video together with text and generate text, which allows them to describe scenes, read text in images (OCR), interpret charts and diagrams, and answer questions about documents. [1]"
+    },
+    {
+      "id": "q14",
+      "question": "Which latency statistics should a deployed model log?",
+      "relevant_sources": [
+        "mlops_notes.txt"
+      ],
+      "retrieved_sources": [
+        "faiss_vector_search.md",
+        "whisper.md",
+        "transformers.md",
+        "rag_overview.md"
+      ],
+      "recall_at_k": 0.0,
+      "precision_at_k": 0.0,
+      "mrr": 0.0,
+      "groundedness": 1.0,
+      "citation_validity": 1.0,
+      "phrase_coverage": 0.0,
+      "evidence_level": "weak",
+      "expected_no_evidence": false,
+      "no_evidence_correct": null,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.6678929998997774,
+        "generation": 0.1890359999379143
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nMost relevant evidence sentences:\n- Whisper is multitask: the same model performs transcription, translation into English, language identification and voice activity detection, controlled by special tokens in the decoder prompt. [2]\n- Model sizes range from tiny (39 million parameters) to large (1.55 billion parameters); larger models are more accurate but slower. [2]\n- RAG reduces hallucination because the model can quote evidence instead of relying on parametric memory, it lets the knowledge base be updated without retraining, and it makes answers auditable through citations. [4]\n- It does not eliminate hallucination: a model can still ignore the context or misread it. [4]"
+    },
+    {
+      "id": "q15",
+      "question": "What is the boiling point of liquid nitrogen?",
+      "relevant_sources": [],
+      "retrieved_sources": [
+        "faiss_vector_search.md"
+      ],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "groundedness": 0.0,
+      "citation_validity": null,
+      "phrase_coverage": null,
+      "evidence_level": "weak",
+      "expected_no_evidence": true,
+      "no_evidence_correct": false,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.34179800013589556,
+        "generation": 0.05202699981055048
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nThe retrieved passages do not contain sentences overlapping with the question. Evidence is insufficient to answer."
+    },
+    {
+      "id": "q16",
+      "question": "Who won the 2018 football World Cup?",
+      "relevant_sources": [],
+      "retrieved_sources": [],
+      "recall_at_k": null,
+      "precision_at_k": null,
+      "mrr": null,
+      "groundedness": 0.0,
+      "citation_validity": null,
+      "phrase_coverage": null,
+      "evidence_level": "none",
+      "expected_no_evidence": true,
+      "no_evidence_correct": true,
+      "llm_judge_score": null,
+      "latency_ms": {
+        "retrieval": 0.27659300008053833,
+        "generation": 0.009207000175592839
+      },
+      "answer": "\u26a0\ufe0f No language model is configured (MRAG_LLM_BACKEND=extractive). The text below is extracted verbatim from the retrieved evidence, not generated or reasoned about.\n\nNo retrieved evidence met the similarity threshold, so there is nothing to extract."
+    }
+  ],
+  "audio": [],
+  "skipped_audio": [
+    "a01"
+  ]
+}

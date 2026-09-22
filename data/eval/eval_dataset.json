@@ -1,0 +1,113 @@
+{
+  "description": "Small hand-labelled evaluation set for the Multimodal RAG Assistant. Each question lists the corpus files that contain the answer (source-level relevance) and key phrases a correct, grounded answer should contain. Questions with expected_no_evidence=true are out of scope for the corpus and test that the system reports insufficient evidence instead of guessing.",
+  "corpus_dir": "corpus",
+  "questions": [
+    {
+      "id": "q01",
+      "question": "What does a pooling layer do in a convolutional neural network?",
+      "relevant_sources": ["cnn_basics.md"],
+      "expected_phrases": ["spatial size", "translation invariance"]
+    },
+    {
+      "id": "q02",
+      "question": "Why do CNNs have fewer parameters than fully connected networks?",
+      "relevant_sources": ["cnn_basics.md"],
+      "expected_phrases": ["same filter", "every position"]
+    },
+    {
+      "id": "q03",
+      "question": "Which architecture introduced skip connections?",
+      "relevant_sources": ["cnn_basics.md"],
+      "expected_phrases": ["ResNet"]
+    },
+    {
+      "id": "q04",
+      "question": "How are attention weights computed in self-attention?",
+      "relevant_sources": ["transformers.md"],
+      "expected_phrases": ["dot product", "softmax"]
+    },
+    {
+      "id": "q05",
+      "question": "Why do transformers need positional encodings?",
+      "relevant_sources": ["transformers.md"],
+      "expected_phrases": ["order"]
+    },
+    {
+      "id": "q06",
+      "question": "How much training data was Whisper trained on and what audio window does it use?",
+      "relevant_sources": ["whisper.md"],
+      "expected_phrases": ["680,000 hours", "30-second"]
+    },
+    {
+      "id": "q07",
+      "question": "What are common failure modes of Whisper?",
+      "relevant_sources": ["whisper.md"],
+      "expected_phrases": ["hallucinated", "repeated"]
+    },
+    {
+      "id": "q08",
+      "question": "When does the inner product in FAISS equal cosine similarity?",
+      "relevant_sources": ["faiss_vector_search.md"],
+      "expected_phrases": ["L2-normalised"]
+    },
+    {
+      "id": "q09",
+      "question": "Does FAISS store document metadata such as page numbers?",
+      "relevant_sources": ["faiss_vector_search.md"],
+      "expected_phrases": ["only vectors", "separately"]
+    },
+    {
+      "id": "q10",
+      "question": "Why does retrieval-augmented generation reduce hallucination?",
+      "relevant_sources": ["rag_overview.md"],
+      "expected_phrases": ["evidence", "citations"]
+    },
+    {
+      "id": "q11",
+      "question": "What is the trade-off in choosing a chunk size for RAG?",
+      "relevant_sources": ["rag_overview.md", "embeddings.md"],
+      "expected_phrases": ["precise", "context"]
+    },
+    {
+      "id": "q12",
+      "question": "What is the difference between a bi-encoder and a cross-encoder?",
+      "relevant_sources": ["embeddings.md", "rag_overview.md"],
+      "expected_phrases": ["independently", "together"]
+    },
+    {
+      "id": "q13",
+      "question": "How does Qwen2-VL handle images of different sizes?",
+      "relevant_sources": ["qwen_vl.md"],
+      "expected_phrases": ["dynamic resolution", "patches"]
+    },
+    {
+      "id": "q14",
+      "question": "Which latency statistics should a deployed model log?",
+      "relevant_sources": ["mlops_notes.txt"],
+      "expected_phrases": ["p95", "p99"]
+    },
+    {
+      "id": "q15",
+      "question": "What is the boiling point of liquid nitrogen?",
+      "relevant_sources": [],
+      "expected_phrases": [],
+      "expected_no_evidence": true
+    },
+    {
+      "id": "q16",
+      "question": "Who won the 2018 football World Cup?",
+      "relevant_sources": [],
+      "expected_phrases": [],
+      "expected_no_evidence": true
+    }
+  ],
+  "audio_examples": [
+    {
+      "id": "a01",
+      "audio": "audio/pooling_question.wav",
+      "reference_transcript": "What does a pooling layer do in a convolutional neural network?",
+      "relevant_sources": ["cnn_basics.md"],
+      "note": "Record this sentence yourself and save it at data/eval/audio/pooling_question.wav; the evaluation skips audio examples whose file is missing. No spoken audio is shipped in the repository."
+    }
+  ]
+}

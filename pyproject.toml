@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "multimodal-rag-assistant"
+version = "0.1.0"
+description = "Multimodal RAG assistant: Qwen-VL + Whisper + FAISS retrieval-augmented generation over text, images and audio."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+dynamic = ["dependencies"]
+
+[tool.setuptools]
+packages = { find = { include = ["src*", "app*"] } }
+
+[tool.setuptools.dynamic]
+dependencies = { file = ["requirements.txt"] }
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra -q"
+markers = [
+    "integration: end-to-end pipeline tests",
+    "requires_models: tests that need downloaded model weights (skipped when unavailable)",
+]
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "app", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "B", "UP"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+# FastAPI's File()/Form() defaults are the idiomatic dependency-injection style.
+"src/api/server.py" = ["B008"]
