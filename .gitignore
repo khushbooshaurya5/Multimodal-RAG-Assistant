@@ -29,10 +29,8 @@ models_cache/
 *.faiss
 *.pkl
 
-# Evaluation outputs
-reports/*.json
-reports/*.md
-!reports/.gitkeep
+# Evaluation outputs (the committed offline baseline lives in reports/)
+reports/scratch/
 
 # OS / editor
 .DS_Store
