@@ -121,8 +121,9 @@ def test_whisper_missing_weights_fails_clearly(monkeypatch: pytest.MonkeyPatch):
     from src.models.errors import ModelUnavailableError
     from src.models.whisper_loader import load_whisper
 
-    monkeypatch.setenv("HF_HUB_OFFLINE", "1")
-    monkeypatch.setenv("TRANSFORMERS_OFFLINE", "1")
+    import huggingface_hub.constants as hf_constants
+
+    monkeypatch.setattr(hf_constants, "HF_HUB_OFFLINE", True)
     with pytest.raises(ModelUnavailableError) as excinfo:
         load_whisper("this-org/does-not-exist-whisper", "cpu")
     assert "does-not-exist-whisper" in str(excinfo.value)

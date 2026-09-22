@@ -5,7 +5,7 @@ from pathlib import Path
 import pytest
 
 from src.schemas import ContentType
-from src.text import TextExtractor, UnsupportedFileError, normalise_whitespace
+from src.text import TextExtractor, UnsupportedFileError, normalise_whitespace, strip_markdown
 
 
 def test_extract_markdown(fixtures_dir: Path):
@@ -38,3 +38,10 @@ def test_missing_file(tmp_path: Path):
 
 def test_normalise_whitespace():
     assert normalise_whitespace("a  b\r\n\r\n\r\n\nc \n d") == "a b\n\nc\nd"
+
+
+def test_markdown_headings_are_stripped(fixtures_dir: Path):
+    doc = TextExtractor().extract(fixtures_dir / "cnn_notes.md")
+    assert "#" not in doc.text
+    assert doc.text.startswith("Convolutional Neural Networks")
+    assert strip_markdown("## Title\n**bold** text") == "Title\nbold text"

@@ -23,6 +23,20 @@ class UnsupportedFileError(ValueError):
     """Raised when a file type has no extractor."""
 
 
+_MD_HEADING = re.compile(r"^\s{0,3}#{1,6}\s+", re.M)
+_MD_EMPHASIS = re.compile(r"(\*\*|__)(.+?)\1")
+
+
+def strip_markdown(text: str) -> str:
+    """Remove heading markers and bold emphasis so chunks read as plain sentences.
+
+    Heading text is kept (it carries useful keywords) but without the ``#``
+    markers, which would otherwise render as headings when quoted in answers.
+    """
+    text = _MD_HEADING.sub("", text)
+    return _MD_EMPHASIS.sub(r"\2", text)
+
+
 def normalise_whitespace(text: str) -> str:
     """Collapse runs of blank lines / spaces while keeping paragraph breaks."""
     text = text.replace("\r\n", "\n").replace("\r", "\n")
@@ -58,6 +72,8 @@ class TextExtractor:
 
     def _extract_text(self, path: Path) -> Document:
         raw = path.read_text(encoding="utf-8", errors="replace")
+        if path.suffix.lower() in {".md", ".markdown"}:
+            raw = strip_markdown(raw)
         text = normalise_whitespace(raw)
         logger.info("Extracted %d characters from %s", len(text), path.name)
         return Document(

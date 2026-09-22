@@ -1,1 +1,1 @@
-"""components package."""
+"""Reusable Streamlit components."""

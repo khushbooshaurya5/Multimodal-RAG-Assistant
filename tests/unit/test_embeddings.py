@@ -60,6 +60,8 @@ def test_sentence_transformer_missing_weights_fails_clearly(monkeypatch: pytest.
     from src.embeddings.sentence_transformer import SentenceTransformerEmbedder
     from src.models.errors import ModelUnavailableError
 
-    monkeypatch.setenv("HF_HUB_OFFLINE", "1")
+    import huggingface_hub.constants as hf_constants
+
+    monkeypatch.setattr(hf_constants, "HF_HUB_OFFLINE", True)
     with pytest.raises(ModelUnavailableError, match="hashing"):
         SentenceTransformerEmbedder("this-org/does-not-exist-embedder", "cpu")
