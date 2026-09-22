@@ -29,6 +29,8 @@ git -C "$ROOT" archive HEAD | tar -x -C "$WORK"
 cp "$ROOT/deploy/huggingface/README.md" "$WORK/README.md"
 cp "$ROOT/deploy/huggingface/packages.txt" "$WORK/packages.txt"
 cp "$ROOT/$PROFILE" "$WORK/.env"
+# CPU-only torch wheels: the PyPI wheel drags in ~3 GB of CUDA libraries the Space cannot use.
+{ echo "--extra-index-url https://download.pytorch.org/whl/cpu"; cat "$ROOT/requirements.txt"; } > "$WORK/requirements.txt"
 rm -rf "$WORK/.github" "$WORK/reports" "$WORK/docs/screenshots" "$WORK/.gitignore"
 
 echo "→ pushing to https://huggingface.co/spaces/$SPACE_ID"

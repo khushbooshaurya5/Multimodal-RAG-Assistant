@@ -201,8 +201,8 @@ scripts/deploy_hf_space.sh khushbooshaurya5/multimodal-rag-assistant
 ```
 
 The script creates the Space, copies the repository with the Space card
-(`deploy/huggingface/README.md`), the apt packages (`ffmpeg`, `libsndfile1`) and the
-`configs/hf_space.env` profile, and pushes it. Model weights download on first start
+(`deploy/huggingface/README.md`), the apt packages (`ffmpeg`, `libsndfile1`), the
+`configs/hf_space.env` profile and a CPU-only PyTorch index for `requirements.txt`, and pushes it. Model weights download on first start
 (a few minutes); override any `MRAG_*` variable under *Settings → Variables* in the
 Space, for example to point vision and generation at a hosted Qwen-VL endpoint through
 `MRAG_*_BACKEND=openai_compatible` for a much faster demo, or upgrade the Space to a GPU.
