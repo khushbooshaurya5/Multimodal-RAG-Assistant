@@ -73,7 +73,6 @@ class WhisperTranscriber:
             feature_extractor=self.bundle.processor.feature_extractor,
             chunk_length_s=self.chunk_length_s,
             device=self.bundle.device,
-            dtype=self.bundle.model.dtype,
         )
 
     def detect_language(self, clip: AudioClip) -> str | None:
