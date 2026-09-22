@@ -1,17 +1,18 @@
-"""Deploy the app to a Hugging Face Space (Streamlit SDK) with the huggingface_hub library.
+"""Deploy the app to a Hugging Face Space (Docker SDK) with the huggingface_hub library.
 
 Prerequisites:
     pip install -U huggingface_hub
     export HF_TOKEN=hf_...        # a token with "write" permission, from https://huggingface.co/settings/tokens
 
 Usage:
-    python scripts/deploy_hf_space.py khushbooshaurya5/multimodal-rag-assistant
+    python scripts/deploy_hf_space.py multimodal-rag-assistant          # under the logged-in account
     python scripts/deploy_hf_space.py <user>/<space> --profile configs/hf_space.env
-    python scripts/deploy_hf_space.py <user>/<space> --dry-run     # assemble only, no upload
+    python scripts/deploy_hf_space.py <user>/<space> --dry-run           # assemble only, no upload
 
 The script creates the Space if it does not exist, assembles a clean copy of the tracked
-repository files with the Space card (YAML front matter), apt packages, the chosen .env
+repository files with the Space card (YAML front matter, Docker SDK), the chosen .env
 profile and a CPU-only PyTorch index, uploads it in one commit, and prints the Space URL.
+The Space builds the repository's Dockerfile and serves Streamlit on port 8501.
 Every failure is reported with the server's message; nothing is swallowed.
 """
 
@@ -50,7 +51,6 @@ def assemble(work: Path, profile: Path) -> None:
             target.unlink()
 
     shutil.copy(ROOT / "deploy" / "huggingface" / "README.md", work / "README.md")
-    shutil.copy(ROOT / "deploy" / "huggingface" / "packages.txt", work / "packages.txt")
     shutil.copy(profile, work / ".env")
     requirements = (ROOT / "requirements.txt").read_text(encoding="utf-8")
     (work / "requirements.txt").write_text(f"{CPU_INDEX}\n{requirements}", encoding="utf-8")
@@ -58,15 +58,12 @@ def assemble(work: Path, profile: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("space_id", help="<hf-username>/<space-name>")
+    parser.add_argument("space_id", help="<space-name> (created under the logged-in account) or <hf-username>/<space-name>")
     parser.add_argument("--profile", type=Path, default=ROOT / "configs" / "hf_space.env")
     parser.add_argument("--private", action="store_true", help="Create the Space as private")
     parser.add_argument("--dry-run", action="store_true", help="Assemble the tree and list it; do not upload")
     args = parser.parse_args()
 
-    if "/" not in args.space_id:
-        print("space_id must look like <hf-username>/<space-name>", file=sys.stderr)
-        return 2
     if not args.profile.is_file():
         print(f"profile not found: {args.profile}", file=sys.stderr)
         return 2
@@ -93,21 +90,30 @@ def main() -> int:
         except Exception as exc:  # noqa: BLE001 - any auth problem is fatal and must be shown
             print(f"Not authenticated with Hugging Face: {exc}\nSet HF_TOKEN or run `hf auth login`.", file=sys.stderr)
             return 1
-        print(f"Authenticated as {who.get('name')}")
+        user = who.get("name")
+        print(f"Authenticated as {user}")
+        space_id = args.space_id if "/" in args.space_id else f"{user}/{args.space_id}"
+        namespace = space_id.split("/")[0]
+        if namespace != user and namespace not in {org.get("name") for org in who.get("orgs", [])}:
+            print(
+                f"Warning: '{namespace}' is not your account ({user}) or one of your organisations; "
+                "creating the Space there will be refused.",
+                file=sys.stderr,
+            )
 
         try:
             url = api.create_repo(
-                repo_id=args.space_id, repo_type="space", space_sdk="streamlit", private=args.private, exist_ok=True
+                repo_id=space_id, repo_type="space", space_sdk="docker", private=args.private, exist_ok=True
             )
             print(f"Space ready: {url}")
         except HfHubHTTPError as exc:
-            print(f"Could not create Space {args.space_id}: {exc}", file=sys.stderr)
+            print(f"Could not create Space {space_id}: {exc}", file=sys.stderr)
             return 1
 
         head = subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--short", "HEAD"], capture_output=True, text=True).stdout.strip()
         try:
             api.upload_folder(
-                repo_id=args.space_id,
+                repo_id=space_id,
                 repo_type="space",
                 folder_path=str(work),
                 commit_message=f"Deploy from {head}",
@@ -116,8 +122,8 @@ def main() -> int:
         except HfHubHTTPError as exc:
             print(f"Upload failed: {exc}", file=sys.stderr)
             return 1
-        print(f"\nDeployed: https://huggingface.co/spaces/{args.space_id}")
-        print("Watch the build under the Space's 'Logs' tab; the first build takes several minutes.")
+        print(f"\nDeployed: https://huggingface.co/spaces/{space_id}")
+        print("Watch the build under the Space's 'Logs' tab; the first Docker build takes 5-10 minutes.")
         print("Override MRAG_* settings under Settings → Variables and secrets if needed.")
         return 0
     finally:

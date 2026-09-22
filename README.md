@@ -193,23 +193,25 @@ API endpoints: `GET /health`, `POST /ingest` (multipart files), `POST /query`
 
 The app fits the free CPU tier of **Hugging Face Spaces** (2 vCPU, 16 GB RAM), which is
 enough for MiniLM embeddings, Whisper-base and Qwen2-VL-2B on CPU (slow, but real).
+New Spaces must use the Docker SDK, so the Space builds this repository's `Dockerfile`.
 
 ```bash
 pip install -U huggingface_hub
-export HF_TOKEN=hf_...                                  # a "write" token from huggingface.co/settings/tokens
-python scripts/deploy_hf_space.py khushbooshaurya5/multimodal-rag-assistant
+export HF_TOKEN=hf_...          # a "write" token from huggingface.co/settings/tokens
+python scripts/deploy_hf_space.py multimodal-rag-assistant       # created under your account
 ```
 
 The script creates the Space, copies the repository with the Space card
-(`deploy/huggingface/README.md`), the apt packages (`ffmpeg`, `libsndfile1`), the
-`configs/hf_space.env` profile and a CPU-only PyTorch index for `requirements.txt`, and pushes it. Model weights download on first start
-(a few minutes); override any `MRAG_*` variable under *Settings → Variables* in the
-Space, for example to point vision and generation at a hosted Qwen-VL endpoint through
+(`deploy/huggingface/README.md`, `sdk: docker`, `app_port: 8501`), the
+`configs/hf_space.env` profile and a CPU-only PyTorch index for `requirements.txt`, and
+pushes it. The first Docker build takes 5-10 minutes and model weights download on first
+start; override any `MRAG_*` variable under *Settings → Variables* in the Space, for
+example to point vision and generation at a hosted Qwen-VL endpoint through
 `MRAG_*_BACKEND=openai_compatible` for a much faster demo, or upgrade the Space to a GPU.
 
-Other hosts: the `Dockerfile` runs anywhere a container runs (Render, Fly.io, Cloud Run,
-a VM). Streamlit Community Cloud is **not** recommended: its 1 GB memory limit cannot hold
-PyTorch plus the models.
+Other hosts: the same `Dockerfile` runs anywhere a container runs (Render, Fly.io, Cloud
+Run, a VM). Streamlit Community Cloud is **not** recommended: its 1 GB memory limit cannot
+hold PyTorch plus the models.
 
 ## Example workflows
 
@@ -334,7 +336,7 @@ multimodal-rag-assistant/
 ├── configs/                default.env · openai_compatible.env · offline.env
 ├── scripts/                ingest.py · query.py · evaluate.py · download_models.py · deploy_hf_space.py
 ├── docs/                   ARCHITECTURE.md · EVALUATION.md · PORTFOLIO.md · screenshots/
-├── deploy/huggingface/     Space card and apt packages for python scripts/deploy_hf_space.py
+├── deploy/huggingface/     Space card (Docker SDK) used by scripts/deploy_hf_space.py
 ├── reports/                committed offline baseline evaluation
 ├── requirements*.txt · pyproject.toml · Dockerfile · Makefile · .env.example
 ```

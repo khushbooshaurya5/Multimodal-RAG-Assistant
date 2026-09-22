@@ -3,9 +3,8 @@ title: Multimodal RAG Assistant
 emoji: 🧠
 colorFrom: indigo
 colorTo: purple
-sdk: streamlit
-python_version: "3.11"
-app_file: app/main.py
+sdk: docker
+app_port: 8501
 pinned: true
 license: mit
 short_description: Qwen-VL + Whisper + FAISS RAG over text, images and voice
