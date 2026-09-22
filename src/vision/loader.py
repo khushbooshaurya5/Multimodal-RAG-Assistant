@@ -11,7 +11,9 @@ from src.utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-IMAGE_EXTENSIONS: frozenset[str] = frozenset({".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".tiff", ".tif"})
+IMAGE_EXTENSIONS: frozenset[str] = frozenset(
+    {".png", ".jpg", ".jpeg", ".webp", ".bmp", ".gif", ".tiff", ".tif"}
+)
 MAX_SIDE = 1280  # keeps VLM token counts and memory bounded
 
 

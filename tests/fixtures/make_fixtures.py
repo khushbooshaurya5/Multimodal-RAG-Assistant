@@ -1,6 +1,6 @@
 """Generate small deterministic test fixtures (run once; outputs are committed).
 
-    python tests/fixtures/make_fixtures.py
+python tests/fixtures/make_fixtures.py
 """
 
 from __future__ import annotations

@@ -59,7 +59,9 @@ class ContextAssembler:
         self.max_context_chars = max_context_chars
         self.max_image_text_chars = max_image_text_chars
 
-    def format_evidence(self, retrieved: list[RetrievedChunk]) -> tuple[str, list[RetrievedChunk], bool]:
+    def format_evidence(
+        self, retrieved: list[RetrievedChunk]
+    ) -> tuple[str, list[RetrievedChunk], bool]:
         lines: list[str] = []
         included: list[RetrievedChunk] = []
         used = 0
@@ -118,7 +120,9 @@ class ContextAssembler:
 
         multimodal_section = ("\n".join(sections) + "\n") if sections else ""
         prompt = ANSWER_TEMPLATE.format(
-            multimodal_section=multimodal_section, evidence=evidence_block, question=question.strip()
+            multimodal_section=multimodal_section,
+            evidence=evidence_block,
+            question=question.strip(),
         )
         return AssembledContext(
             prompt=prompt,

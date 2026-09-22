@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import streamlit as st
-
 from src.schemas import Citation, EvidenceLevel, RAGResponse
 
 _LEVEL_STYLE = {
@@ -41,7 +40,10 @@ def render_sources(response: RAGResponse) -> None:
             f"{' · ' + loc if loc else ''} · similarity {citation.score:.2f}"
         )
         with st.expander(header, expanded=citation.index == 1):
-            full = next((r.text for r in response.retrieved if r.metadata.chunk_id == citation.chunk_id), None)
+            full = next(
+                (r.text for r in response.retrieved if r.metadata.chunk_id == citation.chunk_id),
+                None,
+            )
             st.write(full or citation.snippet)
             st.caption(f"chunk id `{citation.chunk_id}`")
 
@@ -65,7 +67,9 @@ def render_multimodal_details(response: RAGResponse) -> None:
                 )
     if response.image_analysis is not None:
         analysis = response.image_analysis
-        title = "🖼️ Image analysis" + (" (fallback: no vision model)" if analysis.is_fallback else " (Qwen-VL)")
+        title = "🖼️ Image analysis" + (
+            " (fallback: no vision model)" if analysis.is_fallback else " (Qwen-VL)"
+        )
         with st.expander(title, expanded=False):
             if analysis.is_fallback:
                 st.warning(analysis.description)

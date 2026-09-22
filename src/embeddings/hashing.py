@@ -31,7 +31,9 @@ _TOKEN = re.compile(r"[a-z0-9]+(?:'[a-z]+)?", re.I)
 
 
 def _stable_hash(feature: str) -> int:
-    return int.from_bytes(hashlib.blake2b(feature.encode("utf-8"), digest_size=8).digest(), "little")
+    return int.from_bytes(
+        hashlib.blake2b(feature.encode("utf-8"), digest_size=8).digest(), "little"
+    )
 
 
 class HashingEmbedder:

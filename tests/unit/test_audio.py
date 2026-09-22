@@ -4,7 +4,6 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-
 from src.audio import (
     AudioClip,
     AudioDecodeError,
@@ -118,10 +117,9 @@ def test_transcript_to_document_keeps_segments():
 def test_whisper_missing_weights_fails_clearly(monkeypatch: pytest.MonkeyPatch):
     """With the HF cache disabled/offline, loading must raise ModelUnavailableError."""
     pytest.importorskip("transformers")
+    import huggingface_hub.constants as hf_constants
     from src.models.errors import ModelUnavailableError
     from src.models.whisper_loader import load_whisper
-
-    import huggingface_hub.constants as hf_constants
 
     monkeypatch.setattr(hf_constants, "HF_HUB_OFFLINE", True)
     with pytest.raises(ModelUnavailableError) as excinfo:

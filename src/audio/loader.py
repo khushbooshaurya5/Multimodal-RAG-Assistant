@@ -61,7 +61,9 @@ def _lowpass_fir(cutoff_ratio: float, taps: int = 63) -> np.ndarray:
     return (kernel / kernel.sum()).astype(np.float32)
 
 
-def resample(samples: np.ndarray, orig_rate: int, target_rate: int = TARGET_SAMPLE_RATE) -> np.ndarray:
+def resample(
+    samples: np.ndarray, orig_rate: int, target_rate: int = TARGET_SAMPLE_RATE
+) -> np.ndarray:
     """Resample mono audio using an anti-aliased linear interpolation.
 
     This is a dependency-free resampler adequate for speech recognition. When
@@ -113,7 +115,9 @@ class AudioLoader:
         except Exception as exc:
             # soundfile may not decode e.g. an MP3 on older libsndfile: try ffmpeg.
             if self.ffmpeg_available():
-                logger.warning("soundfile failed on %s (%s); falling back to ffmpeg", path.name, exc)
+                logger.warning(
+                    "soundfile failed on %s (%s); falling back to ffmpeg", path.name, exc
+                )
                 samples, rate = self._decode_ffmpeg(path)
             else:
                 raise AudioDecodeError(f"Cannot decode {path.name}: {exc}") from exc
@@ -143,7 +147,11 @@ class AudioLoader:
         resampled = resample(mono, rate, self.target_sample_rate)
         clip = AudioClip(samples=resampled, sample_rate=self.target_sample_rate, source=source)
         logger.info(
-            "Loaded %s: %.2fs @ %d Hz (original %d Hz)", source, clip.duration_s, clip.sample_rate, rate
+            "Loaded %s: %.2fs @ %d Hz (original %d Hz)",
+            source,
+            clip.duration_s,
+            clip.sample_rate,
+            rate,
         )
         return clip
 
@@ -164,8 +172,18 @@ class AudioLoader:
         if not self.ffmpeg_available():
             raise AudioDecodeError("ffmpeg is required for this audio format but is not installed")
         cmd = [
-            "ffmpeg", "-v", "error", "-nostdin", *input_args,
-            "-f", "f32le", "-ac", "1", "-ar", str(self.target_sample_rate), "pipe:1",
+            "ffmpeg",
+            "-v",
+            "error",
+            "-nostdin",
+            *input_args,
+            "-f",
+            "f32le",
+            "-ac",
+            "1",
+            "-ar",
+            str(self.target_sample_rate),
+            "pipe:1",
         ]
         try:
             proc = subprocess.run(cmd, input=stdin, capture_output=True, check=True, timeout=600)

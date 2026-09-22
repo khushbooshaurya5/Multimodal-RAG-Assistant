@@ -90,14 +90,23 @@ class EvaluationReport:
 class EvaluationRunner:
     """Ingests the evaluation corpus and scores every question."""
 
-    def __init__(self, service: AssistantService, dataset_path: Path, *, top_k: int | None = None, use_llm_judge: bool = False) -> None:
+    def __init__(
+        self,
+        service: AssistantService,
+        dataset_path: Path,
+        *,
+        top_k: int | None = None,
+        use_llm_judge: bool = False,
+    ) -> None:
         self.service = service
         self.dataset_path = Path(dataset_path)
         self.dataset = json.loads(self.dataset_path.read_text(encoding="utf-8"))
         self.top_k = top_k or service.settings.top_k
         self.use_llm_judge = use_llm_judge and not service.generator.is_fallback
         if use_llm_judge and service.generator.is_fallback:
-            logger.warning("LLM judge requested but the generator is the extractive fallback; skipping judge")
+            logger.warning(
+                "LLM judge requested but the generator is the extractive fallback; skipping judge"
+            )
 
     # --- Corpus -----------------------------------------------------------
 
@@ -106,7 +115,9 @@ class EvaluationRunner:
         results = self.service.ingest_directory(corpus_dir)
         failed = [r for r in results if r.error]
         if failed:
-            raise RuntimeError("Corpus ingestion failed: " + "; ".join(f"{r.source}: {r.error}" for r in failed))
+            raise RuntimeError(
+                "Corpus ingestion failed: " + "; ".join(f"{r.source}: {r.error}" for r in failed)
+            )
         logger.info("Evaluation corpus indexed: %d files", len(results))
 
     # --- Scoring ----------------------------------------------------------
@@ -115,7 +126,9 @@ class EvaluationRunner:
         if not self.use_llm_judge:
             return None
         try:
-            reply = self.service.generator.generate(JUDGE_PROMPT.format(evidence=evidence, answer=answer))
+            reply = self.service.generator.generate(
+                JUDGE_PROMPT.format(evidence=evidence, answer=answer)
+            )
             match = re.search(r"[01](?:\.\d+)?", reply)
             return float(match.group()) if match else None
         except Exception as exc:  # judge failures must not abort the run
@@ -141,8 +154,12 @@ class EvaluationRunner:
             phrase_coverage=phrase_coverage(response.answer, item.get("expected_phrases", [])),
             evidence_level=response.evidence.level.value,
             expected_no_evidence=expected_none,
-            no_evidence_correct=(response.evidence.level == EvidenceLevel.NONE) if expected_none else None,
-            llm_judge_score=self._judge(response.answer, "\n\n".join(passages)) if passages else None,
+            no_evidence_correct=(response.evidence.level == EvidenceLevel.NONE)
+            if expected_none
+            else None,
+            llm_judge_score=self._judge(response.answer, "\n\n".join(passages))
+            if passages
+            else None,
             latency_ms=dict(response.timings_ms),
             answer=response.answer,
         )
@@ -160,7 +177,9 @@ class EvaluationRunner:
             reference_transcript=item["reference_transcript"],
             hypothesis=hypothesis,
             wer=word_error_rate(item["reference_transcript"], hypothesis),
-            recall_at_k=recall_at_k([c.source for c in response.citations], item.get("relevant_sources", []), self.top_k),
+            recall_at_k=recall_at_k(
+                [c.source for c in response.citations], item.get("relevant_sources", []), self.top_k
+            ),
             latency_ms=dict(response.timings_ms),
         )
 
@@ -177,7 +196,9 @@ class EvaluationRunner:
                 audio_results.append(result)
         return self._aggregate(questions, audio_results, skipped)
 
-    def _aggregate(self, questions: list[QuestionResult], audio: list[AudioResult], skipped: list[str]) -> EvaluationReport:
+    def _aggregate(
+        self, questions: list[QuestionResult], audio: list[AudioResult], skipped: list[str]
+    ) -> EvaluationReport:
         def avg(values: list[float | None]) -> float | None:
             present = [v for v in values if v is not None]
             return round(mean(present), 4) if present else None
@@ -191,12 +212,20 @@ class EvaluationRunner:
             "groundedness_lexical": avg([q.groundedness for q in answerable]),
             "citation_validity": avg([q.citation_validity for q in answerable]),
             "expected_phrase_coverage": avg([q.phrase_coverage for q in answerable]),
-            "no_evidence_detection_rate": avg([float(q.no_evidence_correct) for q in unanswerable if q.no_evidence_correct is not None]),
+            "no_evidence_detection_rate": avg(
+                [
+                    float(q.no_evidence_correct)
+                    for q in unanswerable
+                    if q.no_evidence_correct is not None
+                ]
+            ),
             "llm_judge_groundedness": avg([q.llm_judge_score for q in answerable]),
             "audio_wer": avg([a.wer for a in audio]),
             f"audio_recall@{self.top_k}": avg([a.recall_at_k for a in audio]),
         }
-        stages = sorted({k for q in questions for k in q.latency_ms} | {k for a in audio for k in a.latency_ms})
+        stages = sorted(
+            {k for q in questions for k in q.latency_ms} | {k for a in audio for k in a.latency_ms}
+        )
         latency: dict[str, dict[str, float | None]] = {}
         for stage in stages:
             values = [q.latency_ms[stage] for q in questions if stage in q.latency_ms] + [
@@ -252,16 +281,32 @@ def render_markdown(report: EvaluationReport) -> str:
     lines += ["", "## Aggregate metrics", "", "| Metric | Value |", "| --- | --- |"]
     for key, value in report.aggregate.items():
         lines.append(f"| {key} | {'n/a' if value is None else f'{value:.3f}'} |")
-    lines += ["", "## Latency (ms)", "", "| Stage | mean | p50 | p95 |", "| --- | --- | --- | --- |"]
+    lines += [
+        "",
+        "## Latency (ms)",
+        "",
+        "| Stage | mean | p50 | p95 |",
+        "| --- | --- | --- | --- |",
+    ]
     for stage, stats in report.latency_ms.items():
         fmt = lambda v: "n/a" if v is None else f"{v:.1f}"  # noqa: E731
-        lines.append(f"| {stage} | {fmt(stats['mean'])} | {fmt(stats['p50'])} | {fmt(stats['p95'])} |")
-    lines += ["", "## Per-question results", "", "| id | R@k | P@k | MRR | grounded | phrases | evidence | retrieved sources |", "| --- | --- | --- | --- | --- | --- | --- | --- |"]
+        lines.append(
+            f"| {stage} | {fmt(stats['mean'])} | {fmt(stats['p50'])} | {fmt(stats['p95'])} |"
+        )
+    lines += [
+        "",
+        "## Per-question results",
+        "",
+        "| id | R@k | P@k | MRR | grounded | phrases | evidence | retrieved sources |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- |",
+    ]
     for q in report.questions:
         f = lambda v: "–" if v is None else f"{v:.2f}"  # noqa: E731
         if q.expected_no_evidence:
             verdict = "✅ none" if q.no_evidence_correct else f"❌ {q.evidence_level}"
-            lines.append(f"| {q.id} (unanswerable) | – | – | – | – | – | {verdict} | {', '.join(q.retrieved_sources) or '–'} |")
+            lines.append(
+                f"| {q.id} (unanswerable) | – | – | – | – | – | {verdict} | {', '.join(q.retrieved_sources) or '–'} |"
+            )
         else:
             lines.append(
                 f"| {q.id} | {f(q.recall_at_k)} | {f(q.precision_at_k)} | {f(q.mrr)} | {f(q.groundedness)} | "
@@ -271,9 +316,13 @@ def render_markdown(report: EvaluationReport) -> str:
     if report.audio:
         lines += ["| id | WER | R@k | transcript |", "| --- | --- | --- | --- |"]
         for a in report.audio:
-            lines.append(f"| {a.id} | {a.wer:.3f} | {'–' if a.recall_at_k is None else f'{a.recall_at_k:.2f}'} | {a.hypothesis} |")
+            lines.append(
+                f"| {a.id} | {a.wer:.3f} | {'–' if a.recall_at_k is None else f'{a.recall_at_k:.2f}'} | {a.hypothesis} |"
+            )
     else:
-        lines.append("No audio examples were evaluated (audio files missing or speech backend disabled).")
+        lines.append(
+            "No audio examples were evaluated (audio files missing or speech backend disabled)."
+        )
     if report.skipped_audio:
         lines.append(f"\nSkipped audio examples: {', '.join(report.skipped_audio)}")
     lines += [

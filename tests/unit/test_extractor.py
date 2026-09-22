@@ -3,7 +3,6 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
-
 from src.schemas import ContentType
 from src.text import TextExtractor, UnsupportedFileError, normalise_whitespace, strip_markdown
 

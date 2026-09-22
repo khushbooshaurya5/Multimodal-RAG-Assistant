@@ -20,8 +20,12 @@ from src.utils.logging import configure_logging  # noqa: E402
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--only", nargs="*", choices=["embeddings", "whisper", "vision", "llm", "reranker"])
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--only", nargs="*", choices=["embeddings", "whisper", "vision", "llm", "reranker"]
+    )
     args = parser.parse_args()
     settings = get_settings()
     configure_logging(settings.log_level)
@@ -40,7 +44,10 @@ def main() -> int:
     if "embeddings" in wanted and settings.embedding_backend == "sentence_transformers":
         from src.models.embedding_loader import load_sentence_transformer
 
-        attempt(settings.embedding_model, lambda: load_sentence_transformer(settings.embedding_model, "cpu"))
+        attempt(
+            settings.embedding_model,
+            lambda: load_sentence_transformer(settings.embedding_model, "cpu"),
+        )
     if "reranker" in wanted and settings.rerank:
         from src.models.embedding_loader import load_cross_encoder
 

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import numpy as np
 import pytest
-
 from src.config import get_settings
 from src.embeddings import Embedder, HashingEmbedder, build_embedder, l2_normalise
 
@@ -57,10 +56,9 @@ def test_factory_returns_hashing_in_offline_settings(monkeypatch: pytest.MonkeyP
 
 def test_sentence_transformer_missing_weights_fails_clearly(monkeypatch: pytest.MonkeyPatch):
     pytest.importorskip("sentence_transformers")
+    import huggingface_hub.constants as hf_constants
     from src.embeddings.sentence_transformer import SentenceTransformerEmbedder
     from src.models.errors import ModelUnavailableError
-
-    import huggingface_hub.constants as hf_constants
 
     monkeypatch.setattr(hf_constants, "HF_HUB_OFFLINE", True)
     with pytest.raises(ModelUnavailableError, match="hashing"):

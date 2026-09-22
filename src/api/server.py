@@ -72,7 +72,9 @@ class IngestItem(BaseModel):
 
 @app.get("/health", response_model=HealthResponse)
 def health(service: Service) -> HealthResponse:
-    return HealthResponse(status="ok", backends=service.status().as_dict(), index=service.index_stats())
+    return HealthResponse(
+        status="ok", backends=service.status().as_dict(), index=service.index_stats()
+    )
 
 
 @app.get("/sources")
@@ -99,8 +101,12 @@ async def ingest(service: Service, files: list[UploadFile] = File(...)) -> list[
         result = service.ingest_upload(upload.filename or "upload", data)
         results.append(
             IngestItem(
-                source=result.source, doc_id=result.doc_id, content_type=result.content_type,
-                num_chunks=result.num_chunks, skipped=result.skipped, error=result.error,
+                source=result.source,
+                doc_id=result.doc_id,
+                content_type=result.content_type,
+                num_chunks=result.num_chunks,
+                skipped=result.skipped,
+                error=result.error,
                 timings_ms=result.timings_ms,
             )
         )

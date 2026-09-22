@@ -28,7 +28,9 @@ def _dedupe(seq: Sequence[str]) -> list[str]:
     return list(dict.fromkeys(seq))
 
 
-def recall_at_k(retrieved_sources: Sequence[str], relevant_sources: Sequence[str], k: int) -> float | None:
+def recall_at_k(
+    retrieved_sources: Sequence[str], relevant_sources: Sequence[str], k: int
+) -> float | None:
     """Fraction of relevant sources present in the top-k retrieved sources (``None`` if no relevants)."""
     if not relevant_sources:
         return None
@@ -36,7 +38,9 @@ def recall_at_k(retrieved_sources: Sequence[str], relevant_sources: Sequence[str
     return len(top & set(relevant_sources)) / len(set(relevant_sources))
 
 
-def precision_at_k(retrieved_sources: Sequence[str], relevant_sources: Sequence[str], k: int) -> float | None:
+def precision_at_k(
+    retrieved_sources: Sequence[str], relevant_sources: Sequence[str], k: int
+) -> float | None:
     """Fraction of the top-k *distinct* retrieved sources that are relevant."""
     if not relevant_sources:
         return None
@@ -46,7 +50,9 @@ def precision_at_k(retrieved_sources: Sequence[str], relevant_sources: Sequence[
     return sum(1 for s in top if s in set(relevant_sources)) / len(top)
 
 
-def mean_reciprocal_rank(retrieved_sources: Sequence[str], relevant_sources: Sequence[str]) -> float | None:
+def mean_reciprocal_rank(
+    retrieved_sources: Sequence[str], relevant_sources: Sequence[str]
+) -> float | None:
     """1 / rank of the first relevant source (0 if none retrieved)."""
     if not relevant_sources:
         return None
@@ -73,7 +79,9 @@ def answer_sentences(answer: str) -> list[str]:
     return sentences
 
 
-def groundedness(answer: str, passages: Sequence[str], support_threshold: float = 0.6) -> float | None:
+def groundedness(
+    answer: str, passages: Sequence[str], support_threshold: float = 0.6
+) -> float | None:
     """Share of answer sentences whose content words are mostly covered by some passage.
 
     Returns ``None`` when the answer has no evaluable sentences.

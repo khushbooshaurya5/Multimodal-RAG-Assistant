@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import Any
 
 import streamlit as st
-
 from src.config import get_settings
 from src.rag.service import AssistantService
 from src.utils.logging import configure_logging

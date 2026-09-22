@@ -13,7 +13,6 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-
 from src.models.errors import ModelUnavailableError
 
 pytestmark = [pytest.mark.integration, pytest.mark.requires_models]
@@ -29,7 +28,9 @@ def _skip_unless(loader, *args):
 def test_sentence_transformer_embeddings_are_semantic():
     from src.embeddings.sentence_transformer import SentenceTransformerEmbedder
 
-    embedder = _skip_unless(SentenceTransformerEmbedder, "sentence-transformers/all-MiniLM-L6-v2", "cpu")
+    embedder = _skip_unless(
+        SentenceTransformerEmbedder, "sentence-transformers/all-MiniLM-L6-v2", "cpu"
+    )
     q = embedder.embed_query("a car driving on the road")
     same = embedder.embed_query("an automobile travelling along the street")
     other = embedder.embed_query("a recipe for chocolate cake")

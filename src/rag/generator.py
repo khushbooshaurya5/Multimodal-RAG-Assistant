@@ -57,7 +57,11 @@ class TransformersGenerator:
     supports_images = True
 
     def __init__(
-        self, model_name: str, device: str = "auto", max_new_tokens: int = 512, temperature: float = 0.2
+        self,
+        model_name: str,
+        device: str = "auto",
+        max_new_tokens: int = 512,
+        temperature: float = 0.2,
     ) -> None:
         from src.models.qwen_vl_loader import load_qwen_vl
 
@@ -94,7 +98,9 @@ class OpenAICompatibleGenerator:
     ) -> None:
         from src.models.openai_client import OpenAICompatibleClient
 
-        self.client = OpenAICompatibleClient(base_url, api_key=api_key, model=model, timeout_s=timeout_s)
+        self.client = OpenAICompatibleClient(
+            base_url, api_key=api_key, model=model, timeout_s=timeout_s
+        )
         self.name = f"openai_compatible:{model}"
         self.max_new_tokens = max_new_tokens
         self.temperature = temperature
@@ -104,7 +110,9 @@ class OpenAICompatibleGenerator:
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": self.client.build_user_content(prompt, images)},
         ]
-        return self.client.chat(messages, max_tokens=self.max_new_tokens, temperature=self.temperature)
+        return self.client.chat(
+            messages, max_tokens=self.max_new_tokens, temperature=self.temperature
+        )
 
 
 class ExtractiveGenerator:
@@ -129,7 +137,9 @@ class ExtractiveGenerator:
 
     @staticmethod
     def _content_words(text: str) -> set[str]:
-        return {w.lower() for w in _WORD.findall(text) if w.lower() not in _STOPWORDS and len(w) > 2}
+        return {
+            w.lower() for w in _WORD.findall(text) if w.lower() not in _STOPWORDS and len(w) > 2
+        }
 
     def generate(
         self,
@@ -161,22 +171,28 @@ class ExtractiveGenerator:
                     "Attached image: no vision model was available, so its content could not be analysed."
                 )
             else:
-                lines.append(f"Attached image analysis ({image_analysis.backend}): {image_analysis.description}")
+                lines.append(
+                    f"Attached image analysis ({image_analysis.backend}): {image_analysis.description}"
+                )
                 if image_analysis.extracted_text:
                     lines.append(f"Visible text in image: {image_analysis.extracted_text}")
             lines.append("")
 
         if not retrieved:
-            lines.append("No retrieved evidence met the similarity threshold, so there is nothing to extract.")
+            lines.append(
+                "No retrieved evidence met the similarity threshold, so there is nothing to extract."
+            )
             return "\n".join(lines).strip()
         if not scored:
-            lines.append("The retrieved passages do not contain sentences overlapping with the question. "
-                         "Evidence is insufficient to answer.")
+            lines.append(
+                "The retrieved passages do not contain sentences overlapping with the question. "
+                "Evidence is insufficient to answer."
+            )
             return "\n".join(lines).strip()
 
         lines.append("Most relevant evidence sentences:")
         seen: set[str] = set()
-        for score, idx, sentence in scored:
+        for _score, idx, sentence in scored:
             key = sentence.lower()
             if key in seen:
                 continue
@@ -196,7 +212,10 @@ def build_generator(settings: Settings) -> AnswerGenerator:
     backend = settings.llm_backend
     if backend == "transformers":
         return TransformersGenerator(
-            settings.llm_model, settings.device, settings.llm_max_new_tokens, settings.llm_temperature
+            settings.llm_model,
+            settings.device,
+            settings.llm_max_new_tokens,
+            settings.llm_temperature,
         )
     if backend == "openai_compatible":
         return OpenAICompatibleGenerator(

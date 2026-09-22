@@ -47,10 +47,14 @@ class QwenVLBundle:
         content.append({"type": "text", "text": prompt})
         messages: list[dict[str, Any]] = []
         if system_prompt:
-            messages.append({"role": "system", "content": [{"type": "text", "text": system_prompt}]})
+            messages.append(
+                {"role": "system", "content": [{"type": "text", "text": system_prompt}]}
+            )
         messages.append({"role": "user", "content": content})
 
-        text = self.processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+        text = self.processor.apply_chat_template(
+            messages, tokenize=False, add_generation_prompt=True
+        )
         kwargs: dict[str, Any] = {"text": [text], "return_tensors": "pt"}
         if images:
             kwargs["images"] = images

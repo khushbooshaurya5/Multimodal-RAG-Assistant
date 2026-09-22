@@ -4,10 +4,15 @@ from pathlib import Path
 
 import pytest
 from PIL import Image
-
 from src.audio.loader import AudioClip
 from src.embeddings import HashingEmbedder
-from src.rag import ContextAssembler, ExtractiveGenerator, IngestionPipeline, RAGPipeline, compute_evidence
+from src.rag import (
+    ContextAssembler,
+    ExtractiveGenerator,
+    IngestionPipeline,
+    RAGPipeline,
+    compute_evidence,
+)
 from src.rag.context import build_citations
 from src.retrieval import Retriever
 from src.schemas import (
@@ -28,7 +33,10 @@ def rc(text: str, score: float, rank: int, **meta) -> RetrievedChunk:
     meta.setdefault("source", "doc.txt")
     meta.setdefault("content_type", ContentType.TEXT)
     return RetrievedChunk(
-        chunk=Chunk(text=text, metadata=ChunkMetadata(chunk_id=f"c{rank}", doc_id="d", chunk_index=rank, **meta)),
+        chunk=Chunk(
+            text=text,
+            metadata=ChunkMetadata(chunk_id=f"c{rank}", doc_id="d", chunk_index=rank, **meta),
+        ),
         score=score,
         rank=rank,
     )
@@ -39,8 +47,23 @@ def rc(text: str, score: float, rank: int, **meta) -> RetrievedChunk:
 
 def test_context_numbering_and_metadata():
     retrieved = [
-        rc("Pooling reduces resolution.", 0.8, 1, source="a.pdf", content_type=ContentType.PDF, page=4),
-        rc("Whisper transcribes audio.", 0.5, 2, source="t.wav", content_type=ContentType.AUDIO, start_time=3.0, end_time=7.5),
+        rc(
+            "Pooling reduces resolution.",
+            0.8,
+            1,
+            source="a.pdf",
+            content_type=ContentType.PDF,
+            page=4,
+        ),
+        rc(
+            "Whisper transcribes audio.",
+            0.5,
+            2,
+            source="t.wav",
+            content_type=ContentType.AUDIO,
+            start_time=3.0,
+            end_time=7.5,
+        ),
     ]
     ctx = ContextAssembler().build("What does pooling do?", retrieved)
     assert "[1] source=a.pdf | type=pdf | page 4 | similarity=0.80" in ctx.prompt
@@ -59,9 +82,13 @@ def test_context_budget_truncates_and_marks():
 
 
 def test_context_without_evidence_adds_note_and_multimodal_sections():
-    analysis = ImageAnalysis(source="d.png", description="Two boxes.", extracted_text="Input", backend="fake")
+    analysis = ImageAnalysis(
+        source="d.png", description="Two boxes.", extracted_text="Input", backend="fake"
+    )
     transcript = Transcript(text="explain this", language="en", backend="whisper")
-    ctx = ContextAssembler().build("explain this", [], image_analysis=analysis, transcript=transcript)
+    ctx = ContextAssembler().build(
+        "explain this", [], image_analysis=analysis, transcript=transcript
+    )
     assert "No retrieved passages met the similarity threshold" in ctx.prompt
     assert "VOICE INPUT" in ctx.prompt and "explain this" in ctx.prompt
     assert "Visible text: Input" in ctx.prompt
@@ -69,7 +96,14 @@ def test_context_without_evidence_adds_note_and_multimodal_sections():
 
 
 def test_fallback_image_analysis_is_labelled_in_prompt():
-    analysis = ImageAnalysis(source="d.png", description="", backend="metadata_only", is_fallback=True, width=10, height=5)
+    analysis = ImageAnalysis(
+        source="d.png",
+        description="",
+        backend="metadata_only",
+        is_fallback=True,
+        width=10,
+        height=5,
+    )
     ctx = ContextAssembler().build("q", [], image_analysis=analysis)
     assert "no vision model was available" in ctx.prompt
 
@@ -91,7 +125,9 @@ def test_evidence_levels():
     strong = compute_evidence([rc("a", 0.8, 1), rc("b", 0.7, 2)], similarity_threshold=0.25)
     assert strong.level == EvidenceLevel.STRONG
     assert "not a calibrated probability" in strong.note
-    lexical = compute_evidence([rc("a", 0.4, 1), rc("b", 0.3, 2)], similarity_threshold=0.05, lexical_backend=True)
+    lexical = compute_evidence(
+        [rc("a", 0.4, 1), rc("b", 0.3, 2)], similarity_threshold=0.05, lexical_backend=True
+    )
     assert lexical.level == EvidenceLevel.STRONG
 
 
@@ -113,7 +149,9 @@ def test_extractive_generator_cites_relevant_sentences():
 def test_extractive_generator_reports_insufficient_evidence():
     gen = ExtractiveGenerator()
     assert "nothing to extract" in gen.generate("p", retrieved=[], question="q?")
-    out = gen.generate("p", retrieved=[rc("Bananas are yellow.", 0.3, 1)], question="What is quantum tunnelling?")
+    out = gen.generate(
+        "p", retrieved=[rc("Bananas are yellow.", 0.3, 1)], question="What is quantum tunnelling?"
+    )
     assert "insufficient" in out
 
 
@@ -139,8 +177,12 @@ class FakeAnalyzer:
 
     def analyze(self, image, source):
         return ImageAnalysis(
-            source=source, description="A CNN diagram showing convolution and pooling.",
-            extracted_text="Input Conv2D Pooling", objects=["box"], image_kind="diagram", backend=self.name,
+            source=source,
+            description="A CNN diagram showing convolution and pooling.",
+            extracted_text="Input Conv2D Pooling",
+            objects=["box"],
+            image_kind="diagram",
+            backend=self.name,
         )
 
     def answer(self, image, question, context=None):
@@ -152,9 +194,13 @@ class FakeTranscriber:
 
     def transcribe(self, clip: AudioClip, *, language=None) -> Transcript:
         return Transcript(
-            text="What do pooling layers do?", language="en",
-            segments=[TranscriptSegment(text="What do pooling layers do?", start=0.0, end=clip.duration_s)],
-            duration_s=clip.duration_s, backend=self.name,
+            text="What do pooling layers do?",
+            language="en",
+            segments=[
+                TranscriptSegment(text="What do pooling layers do?", start=0.0, end=clip.duration_s)
+            ],
+            duration_s=clip.duration_s,
+            backend=self.name,
         )
 
 
@@ -163,11 +209,19 @@ def pipeline(fixtures_dir: Path, tmp_path: Path):
     emb = HashingEmbedder(dimension=256)
     store = FaissVectorStore(emb.dimension, emb.name)
     ingestion = IngestionPipeline(emb, store, TextChunker(200, 40), index_dir=tmp_path / "idx")
-    results = ingestion.ingest_paths([fixtures_dir / "cnn_notes.md", fixtures_dir / "transformer_notes.txt"])
+    results = ingestion.ingest_paths(
+        [fixtures_dir / "cnn_notes.md", fixtures_dir / "transformer_notes.txt"]
+    )
     assert all(r.ok for r in results)
     retriever = Retriever(emb, store, top_k=3, similarity_threshold=0.05)
     gen = FakeGenerator()
-    pipe = RAGPipeline(retriever, gen, image_analyzer=FakeAnalyzer(), transcriber=FakeTranscriber(), ingestion=ingestion)
+    pipe = RAGPipeline(
+        retriever,
+        gen,
+        image_analyzer=FakeAnalyzer(),
+        transcriber=FakeTranscriber(),
+        ingestion=ingestion,
+    )
     return pipe, gen, store
 
 
@@ -185,7 +239,9 @@ def test_pipeline_text_query(pipeline):
 def test_pipeline_image_query_passes_image_and_enriches_retrieval(pipeline, fixtures_dir: Path):
     pipe, gen, store = pipeline
     img = Image.open(fixtures_dir / "diagram.png")
-    resp = pipe.answer("Explain this architecture", image=img, image_source="diagram.png", index_image=True)
+    resp = pipe.answer(
+        "Explain this architecture", image=img, image_source="diagram.png", index_image=True
+    )
     assert resp.image_analysis is not None and resp.image_analysis.image_kind == "diagram"
     assert gen.calls[-1]["images"] == [img]
     assert any(c.source == "cnn_notes.md" for c in resp.citations)  # image text pulled CNN notes

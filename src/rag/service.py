@@ -70,10 +70,18 @@ class AssistantService:
         self.settings.ensure_dirs()
         self._warnings: list[str] = []
 
-        self.embedder: Embedder = self._build("embedder", lambda: build_embedder(self.settings), self._fallback_embedder)
-        self.generator: AnswerGenerator = self._build("generator", lambda: build_generator(self.settings), ExtractiveGenerator)
-        self.image_analyzer: ImageAnalyzer = self._build("vision", lambda: build_image_analyzer(self.settings), MetadataImageAnalyzer)
-        self.transcriber: Transcriber | None = self._build("transcriber", lambda: build_transcriber(self.settings), lambda: None)
+        self.embedder: Embedder = self._build(
+            "embedder", lambda: build_embedder(self.settings), self._fallback_embedder
+        )
+        self.generator: AnswerGenerator = self._build(
+            "generator", lambda: build_generator(self.settings), ExtractiveGenerator
+        )
+        self.image_analyzer: ImageAnalyzer = self._build(
+            "vision", lambda: build_image_analyzer(self.settings), MetadataImageAnalyzer
+        )
+        self.transcriber: Transcriber | None = self._build(
+            "transcriber", lambda: build_transcriber(self.settings), lambda: None
+        )
         self.reranker: Reranker | None = None
         if self.settings.rerank:
             self.reranker = self._build(
@@ -130,7 +138,9 @@ class AssistantService:
     def _open_store(self) -> FaissVectorStore:
         index_dir = self.settings.index_dir
         try:
-            return FaissVectorStore.load_or_create(index_dir, self.embedder.dimension, self.embedder.name)
+            return FaissVectorStore.load_or_create(
+                index_dir, self.embedder.dimension, self.embedder.name
+            )
         except Exception as exc:
             message = (
                 f"index: could not load {index_dir} ({exc}); starting with an empty in-memory index. "

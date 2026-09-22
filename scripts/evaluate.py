@@ -24,11 +24,19 @@ from src.utils.logging import configure_logging  # noqa: E402
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--dataset", type=Path, default=ROOT / "data" / "eval" / "eval_dataset.json")
+    parser = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        "--dataset", type=Path, default=ROOT / "data" / "eval" / "eval_dataset.json"
+    )
     parser.add_argument("--top-k", type=int, default=None)
-    parser.add_argument("--threshold", type=float, default=None, help="Override the similarity threshold")
-    parser.add_argument("--judge", action="store_true", help="Also score groundedness with the configured LLM")
+    parser.add_argument(
+        "--threshold", type=float, default=None, help="Override the similarity threshold"
+    )
+    parser.add_argument(
+        "--judge", action="store_true", help="Also score groundedness with the configured LLM"
+    )
     parser.add_argument("--out-dir", type=Path, default=ROOT / "reports")
     parser.add_argument("--tag", default="", help="Suffix for the report filenames, e.g. 'offline'")
     args = parser.parse_args()

@@ -126,7 +126,11 @@ class RAGPipeline:
         )
         logger.info(
             "Answered query (%d chars) with %d passages, evidence=%s, backend=%s, %.0f ms",
-            len(full_question), len(assembled.included), evidence.level.value, self.generator.name, timer.total_ms,
+            len(full_question),
+            len(assembled.included),
+            evidence.level.value,
+            self.generator.name,
+            timer.total_ms,
         )
         return RAGResponse(
             query=full_question,
@@ -154,12 +158,18 @@ class RAGPipeline:
 
     @staticmethod
     def _merge_question(question: str | None, transcript: Transcript | None) -> str:
-        parts = [p.strip() for p in (question or "", transcript.text if transcript else "") if p and p.strip()]
+        parts = [
+            p.strip()
+            for p in (question or "", transcript.text if transcript else "")
+            if p and p.strip()
+        ]
         if not parts:
             raise ValueError("Provide a question as text or as audio")
         return " ".join(parts)
 
-    def _analyse_image(self, image: Image.Image | None, source: str, timer: Timer) -> ImageAnalysis | None:
+    def _analyse_image(
+        self, image: Image.Image | None, source: str, timer: Timer
+    ) -> ImageAnalysis | None:
         if image is None:
             return None
         if self.image_analyzer is None:

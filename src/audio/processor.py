@@ -13,7 +13,9 @@ from src.utils.logging import get_logger
 logger = get_logger(__name__)
 
 
-def transcript_to_document(transcript: Transcript, source: str, doc_id: str | None = None) -> Document:
+def transcript_to_document(
+    transcript: Transcript, source: str, doc_id: str | None = None
+) -> Document:
     """Build a :class:`Document` (with timed segments) from a transcript."""
     return Document(
         doc_id=doc_id or sha256_text(f"{source}:{transcript.text}"),
@@ -48,7 +50,9 @@ class AudioProcessor:
         clip = self.loader.load(Path(path))
         return self.transcriber.transcribe(clip, language=language)
 
-    def transcribe_bytes(self, data: bytes, filename: str, *, language: str | None = None) -> Transcript:
+    def transcribe_bytes(
+        self, data: bytes, filename: str, *, language: str | None = None
+    ) -> Transcript:
         if self.transcriber is None:
             raise AudioDisabledError(
                 "No speech-recognition backend is available (MRAG_WHISPER_BACKEND=none)."

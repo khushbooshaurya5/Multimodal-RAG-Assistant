@@ -46,7 +46,9 @@ class OpenAICompatibleClient:
         self._client = httpx.Client(base_url=self.base_url, headers=headers, timeout=timeout_s)
 
     @staticmethod
-    def build_user_content(text: str, images: list[Any] | None = None) -> list[dict[str, Any]] | str:
+    def build_user_content(
+        text: str, images: list[Any] | None = None
+    ) -> list[dict[str, Any]] | str:
         """Build a multimodal ``content`` array (or plain string when no images)."""
         if not images:
             return text

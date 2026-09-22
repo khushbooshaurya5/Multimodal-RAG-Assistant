@@ -5,7 +5,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 import streamlit as st
-
 from src.rag.service import AssistantService
 from src.schemas import ContentType
 
@@ -39,9 +38,14 @@ def _render_status(service: AssistantService) -> None:
     if fallbacks.get("embedder"):
         st.warning("Embeddings: hashing fallback (lexical only, no semantic model).", icon="⚠️")
     if fallbacks.get("generator"):
-        st.warning("Generator: extractive fallback - answers are evidence excerpts, not LLM output.", icon="⚠️")
+        st.warning(
+            "Generator: extractive fallback - answers are evidence excerpts, not LLM output.",
+            icon="⚠️",
+        )
     if fallbacks.get("vision"):
-        st.warning("Vision: metadata-only fallback - images are NOT understood by a model.", icon="⚠️")
+        st.warning(
+            "Vision: metadata-only fallback - images are NOT understood by a model.", icon="⚠️"
+        )
     if fallbacks.get("audio_disabled"):
         st.info("Speech recognition is disabled (MRAG_WHISPER_BACKEND=none).", icon="🔇")
     for warning in status.warnings:
@@ -72,7 +76,9 @@ def _render_retrieval_controls(service: AssistantService) -> RetrievalControls:
         default=[],
         help="Leave empty to search everything.",
     )
-    index_image = st.toggle("Index attached images", value=False, help="Add the analysis of a query image to the index.")
+    index_image = st.toggle(
+        "Index attached images", value=False, help="Add the analysis of a query image to the index."
+    )
     show_prompt = st.toggle("Show assembled prompt", value=False)
     return RetrievalControls(
         top_k=top_k,
@@ -101,10 +107,14 @@ def _render_index_controls(service: AssistantService) -> None:
                 elif result.skipped:
                     st.info(f"{result.source}: already indexed")
                 else:
-                    st.success(f"{result.source}: {result.num_chunks} chunks ({result.content_type})")
+                    st.success(
+                        f"{result.source}: {result.num_chunks} chunks ({result.content_type})"
+                    )
 
     stats = service.index_stats()
-    st.caption(f"{stats['num_vectors']} vectors · {len(stats['sources'])} sources · saved in `{stats['index_dir']}`")
+    st.caption(
+        f"{stats['num_vectors']} vectors · {len(stats['sources'])} sources · saved in `{stats['index_dir']}`"
+    )
     if stats["sources"]:
         with st.expander("Indexed sources", expanded=False):
             for source, count in sorted(stats["sources"].items()):

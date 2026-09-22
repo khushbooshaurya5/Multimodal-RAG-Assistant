@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-
 from src.evaluation import (
     citation_validity,
     groundedness,
@@ -25,7 +24,9 @@ def test_recall_precision_mrr():
 
 
 def test_groundedness_lexical_proxy():
-    passages = ["Pooling layers reduce the spatial size of feature maps and add translation invariance."]
+    passages = [
+        "Pooling layers reduce the spatial size of feature maps and add translation invariance."
+    ]
     supported = "Pooling layers reduce the spatial size of feature maps. [1]"
     unsupported = "Pooling layers were invented by Napoleon in 1805."
     assert groundedness(supported, passages) == 1.0

@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import streamlit as st
+from src.schemas import RAGResponse
 
 from app.components.sources import render_response
-from src.schemas import RAGResponse
 
 
 def render_history(show_prompt: bool) -> None:

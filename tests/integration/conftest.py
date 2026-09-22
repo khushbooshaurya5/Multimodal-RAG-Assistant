@@ -13,7 +13,6 @@ from pathlib import Path
 
 import pytest
 from PIL import Image
-
 from src.audio.loader import AudioClip
 from src.rag.service import AssistantService
 from src.schemas import ImageAnalysis, Transcript, TranscriptSegment
@@ -46,17 +45,29 @@ class StubWhisper:
 
     name = "stub_whisper"
 
-    def __init__(self, text: str = "Explain how pooling layers work in a convolutional neural network.") -> None:
+    def __init__(
+        self, text: str = "Explain how pooling layers work in a convolutional neural network."
+    ) -> None:
         self.text = text
 
     def transcribe(self, clip: AudioClip, *, language: str | None = None) -> Transcript:
         words = self.text.split()
         step = clip.duration_s / max(len(words), 1)
         segments = [
-            TranscriptSegment(text=" ".join(words[i : i + 4]), start=i * step, end=min((i + 4) * step, clip.duration_s))
+            TranscriptSegment(
+                text=" ".join(words[i : i + 4]),
+                start=i * step,
+                end=min((i + 4) * step, clip.duration_s),
+            )
             for i in range(0, len(words), 4)
         ]
-        return Transcript(text=self.text, language="en", segments=segments, duration_s=clip.duration_s, backend=self.name)
+        return Transcript(
+            text=self.text,
+            language="en",
+            segments=segments,
+            duration_s=clip.duration_s,
+            backend=self.name,
+        )
 
 
 @pytest.fixture
@@ -85,7 +96,11 @@ def multimodal_service(service: AssistantService) -> AssistantService:
 @pytest.fixture
 def indexed_service(multimodal_service: AssistantService, fixtures_dir: Path) -> AssistantService:
     results = multimodal_service.ingest_files(
-        [fixtures_dir / "cnn_notes.md", fixtures_dir / "transformer_notes.txt", fixtures_dir / "sample.pdf"]
+        [
+            fixtures_dir / "cnn_notes.md",
+            fixtures_dir / "transformer_notes.txt",
+            fixtures_dir / "sample.pdf",
+        ]
     )
     assert all(r.ok for r in results), [r.error for r in results]
     return multimodal_service

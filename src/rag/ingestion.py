@@ -76,9 +76,7 @@ class IngestionPipeline:
     def supports(self, path: Path) -> bool:
         path = Path(path)
         return (
-            self.text_extractor.supports(path)
-            or supports_image(path)
-            or AudioLoader.supports(path)
+            self.text_extractor.supports(path) or supports_image(path) or AudioLoader.supports(path)
         )
 
     def extract(self, path: Path) -> Document:
@@ -100,10 +98,14 @@ class IngestionPipeline:
 
     # --- Indexing ---------------------------------------------------------
 
-    def index_document(self, document: Document, *, save: bool = True) -> tuple[list[Chunk], list[int]]:
+    def index_document(
+        self, document: Document, *, save: bool = True
+    ) -> tuple[list[Chunk], list[int]]:
         """Chunk, embed and add a document to the store (skips already-indexed docs)."""
         if self.store.contains_doc(document.doc_id):
-            logger.info("Document %s (%s) already indexed; skipping", document.source, document.doc_id)
+            logger.info(
+                "Document %s (%s) already indexed; skipping", document.source, document.doc_id
+            )
             return [], []
         chunks = self.chunker.chunk_document(document)
         if not chunks:
@@ -124,26 +126,43 @@ class IngestionPipeline:
                 document = self.extract(path)
             if self.store.contains_doc(document.doc_id):
                 return IngestResult(
-                    source=path.name, doc_id=document.doc_id, content_type=document.content_type,
-                    num_chunks=0, skipped=True, timings_ms=timer.timings_ms, document=document,
+                    source=path.name,
+                    doc_id=document.doc_id,
+                    content_type=document.content_type,
+                    num_chunks=0,
+                    skipped=True,
+                    timings_ms=timer.timings_ms,
+                    document=document,
                 )
             with timer.track("chunk_embed_index"):
                 chunks, _ = self.index_document(document, save=save)
             return IngestResult(
-                source=path.name, doc_id=document.doc_id, content_type=document.content_type,
-                num_chunks=len(chunks), timings_ms=timer.timings_ms, document=document,
+                source=path.name,
+                doc_id=document.doc_id,
+                content_type=document.content_type,
+                num_chunks=len(chunks),
+                timings_ms=timer.timings_ms,
+                document=document,
             )
         except (AudioDisabledError, ModelUnavailableError, ValueError, FileNotFoundError) as exc:
             logger.error("Cannot ingest %s: %s", path.name, exc)
             return IngestResult(
-                source=path.name, doc_id=None, content_type=None, num_chunks=0,
-                error=f"{type(exc).__name__}: {exc}", timings_ms=timer.timings_ms,
+                source=path.name,
+                doc_id=None,
+                content_type=None,
+                num_chunks=0,
+                error=f"{type(exc).__name__}: {exc}",
+                timings_ms=timer.timings_ms,
             )
         except Exception as exc:
             logger.exception("Failed to ingest %s", path.name)
             return IngestResult(
-                source=path.name, doc_id=None, content_type=None, num_chunks=0,
-                error=f"{type(exc).__name__}: {exc}", timings_ms=timer.timings_ms,
+                source=path.name,
+                doc_id=None,
+                content_type=None,
+                num_chunks=0,
+                error=f"{type(exc).__name__}: {exc}",
+                timings_ms=timer.timings_ms,
             )
 
     def ingest_paths(self, paths: list[Path], *, save: bool = True) -> list[IngestResult]:
@@ -153,7 +172,9 @@ class IngestionPipeline:
             self.save()
         return results
 
-    def ingest_directory(self, directory: Path, *, recursive: bool = True, save: bool = True) -> list[IngestResult]:
+    def ingest_directory(
+        self, directory: Path, *, recursive: bool = True, save: bool = True
+    ) -> list[IngestResult]:
         directory = Path(directory)
         pattern = "**/*" if recursive else "*"
         paths = sorted(p for p in directory.glob(pattern) if p.is_file() and self.supports(p))
@@ -171,4 +192,8 @@ class IngestionPipeline:
             self.embedder.embed_texts(texts[i : i + self.embed_batch_size])
             for i in range(0, len(texts), self.embed_batch_size)
         ]
-        return np.concatenate(batches, axis=0) if batches else np.zeros((0, self.embedder.dimension), dtype=np.float32)
+        return (
+            np.concatenate(batches, axis=0)
+            if batches
+            else np.zeros((0, self.embedder.dimension), dtype=np.float32)
+        )

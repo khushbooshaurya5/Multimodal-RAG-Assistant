@@ -83,7 +83,9 @@ class Retriever:
     ) -> list[RetrievedChunk]:
         """Return the most relevant chunks for ``query``, best first."""
         k = top_k or self.top_k
-        threshold = self.similarity_threshold if similarity_threshold is None else similarity_threshold
+        threshold = (
+            self.similarity_threshold if similarity_threshold is None else similarity_threshold
+        )
         use_rerank = self.reranker is not None and (rerank if rerank is not None else True)
         if not query.strip() or self.store.is_empty:
             return []
@@ -98,7 +100,9 @@ class Retriever:
         deduped: list[tuple[str, float]] = []
         kept: list[RetrievedChunk] = []
         for chunk, score in above:
-            if any(is_near_duplicate(chunk.text, text, self.dedup_threshold) for text, _ in deduped):
+            if any(
+                is_near_duplicate(chunk.text, text, self.dedup_threshold) for text, _ in deduped
+            ):
                 continue
             deduped.append((chunk.text, score))
             kept.append(RetrievedChunk(chunk=chunk, score=score, rank=len(kept) + 1))
@@ -109,6 +113,11 @@ class Retriever:
         results = [c.model_copy(update={"rank": i + 1}) for i, c in enumerate(kept[:k])]
         logger.info(
             "Retrieved %d/%d candidates above threshold %.2f (dedup removed %d, k=%d, rerank=%s)",
-            len(results), len(raw), threshold, len(above) - len(kept) if not use_rerank else len(above) - len(deduped), k, use_rerank,
+            len(results),
+            len(raw),
+            threshold,
+            len(above) - len(kept) if not use_rerank else len(above) - len(deduped),
+            k,
+            use_rerank,
         )
         return results

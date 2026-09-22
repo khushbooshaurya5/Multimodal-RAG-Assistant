@@ -165,7 +165,9 @@ class OpenAICompatibleAnalyzer:
     ) -> None:
         from src.models.openai_client import OpenAICompatibleClient
 
-        self.client = OpenAICompatibleClient(base_url, api_key=api_key, model=model, timeout_s=timeout_s)
+        self.client = OpenAICompatibleClient(
+            base_url, api_key=api_key, model=model, timeout_s=timeout_s
+        )
         self.model_name = model
         self.max_new_tokens = max_new_tokens
 
@@ -200,7 +202,11 @@ class MetadataImageAnalyzer:
         exif_bits: list[str] = []
         try:
             exif = image.getexif()
-            for tag, label in ((0x010F, "camera make"), (0x0110, "camera model"), (0x9003, "captured")):
+            for tag, label in (
+                (0x010F, "camera make"),
+                (0x0110, "camera model"),
+                (0x9003, "captured"),
+            ):
                 if tag in exif:
                     exif_bits.append(f"{label}: {exif[tag]}")
         except Exception:  # pragma: no cover - EXIF parsing is best effort
@@ -240,7 +246,9 @@ def build_image_analyzer(settings: Settings) -> ImageAnalyzer:
     """
     backend = settings.vision_backend
     if backend == "transformers":
-        return QwenVLAnalyzer(settings.vision_model, settings.device, settings.vision_max_new_tokens)
+        return QwenVLAnalyzer(
+            settings.vision_model, settings.device, settings.vision_max_new_tokens
+        )
     if backend == "openai_compatible":
         return OpenAICompatibleAnalyzer(
             settings.openai_base_url,

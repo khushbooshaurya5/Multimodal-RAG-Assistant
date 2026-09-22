@@ -4,7 +4,6 @@ from pathlib import Path
 
 import numpy as np
 import pytest
-
 from src.embeddings import HashingEmbedder
 from src.schemas import Chunk, ChunkMetadata, ContentType
 from src.vectorstore import FaissVectorStore, VectorStoreError
@@ -40,8 +39,17 @@ def populated(embedder: HashingEmbedder) -> FaissVectorStore:
     chunks = [
         make_chunk(texts[0], 0, doc_id="a", source="cnn.md"),
         make_chunk(texts[1], 1, doc_id="a", source="cnn.md"),
-        make_chunk(texts[2], 0, doc_id="b", source="talk.wav", content_type=ContentType.AUDIO, start_time=1.0),
-        make_chunk(texts[3], 0, doc_id="c", source="faiss.pdf", content_type=ContentType.PDF, page=3),
+        make_chunk(
+            texts[2],
+            0,
+            doc_id="b",
+            source="talk.wav",
+            content_type=ContentType.AUDIO,
+            start_time=1.0,
+        ),
+        make_chunk(
+            texts[3], 0, doc_id="c", source="faiss.pdf", content_type=ContentType.PDF, page=3
+        ),
     ]
     store = FaissVectorStore(embedder.dimension, embedder.name)
     store.add(chunks, embedder.embed_texts(texts))
@@ -58,14 +66,21 @@ def test_add_and_search(populated: FaissVectorStore, embedder: HashingEmbedder):
 
 
 def test_add_is_idempotent(populated: FaissVectorStore, embedder: HashingEmbedder):
-    chunk = make_chunk("Convolutional neural networks use convolution and pooling layers.", 0, doc_id="a", source="cnn.md")
+    chunk = make_chunk(
+        "Convolutional neural networks use convolution and pooling layers.",
+        0,
+        doc_id="a",
+        source="cnn.md",
+    )
     assert populated.add([chunk], embedder.embed_texts([chunk.text])) == []
     assert len(populated) == 4
 
 
 def test_metadata_filter(populated: FaissVectorStore, embedder: HashingEmbedder):
     q = embedder.embed_query("model")
-    results = populated.search(q, k=4, metadata_filter=lambda m: m.content_type == ContentType.AUDIO)
+    results = populated.search(
+        q, k=4, metadata_filter=lambda m: m.content_type == ContentType.AUDIO
+    )
     assert [r[0].metadata.source for r in results] == ["talk.wav"]
     assert results[0][0].metadata.start_time == 1.0
 
@@ -91,7 +106,9 @@ def test_search_empty_store(embedder: HashingEmbedder):
     assert FaissVectorStore(128).search(embedder.embed_query("x"), k=3) == []
 
 
-def test_save_and_load_round_trip(populated: FaissVectorStore, embedder: HashingEmbedder, tmp_path: Path):
+def test_save_and_load_round_trip(
+    populated: FaissVectorStore, embedder: HashingEmbedder, tmp_path: Path
+):
     index_dir = tmp_path / "index"
     populated.save(index_dir)
     assert FaissVectorStore.exists(index_dir)
@@ -105,12 +122,16 @@ def test_save_and_load_round_trip(populated: FaissVectorStore, embedder: Hashing
     assert [c.metadata.chunk_id for c, _ in before] == [c.metadata.chunk_id for c, _ in after]
     assert np.allclose([s for _, s in before], [s for _, s in after])
     # Rich metadata survives.
-    pdf_chunk = next(c for _, c in loaded.metadata.items() if c.metadata.content_type == ContentType.PDF)
+    pdf_chunk = next(
+        c for _, c in loaded.metadata.items() if c.metadata.content_type == ContentType.PDF
+    )
     assert pdf_chunk.metadata.page == 3
     assert pdf_chunk.metadata.indexed_at is not None
 
     # Ids keep increasing after reload so new vectors never collide.
-    new_ids = loaded.add([make_chunk("new text", 9, doc_id="z")], embedder.embed_texts(["new text"]))
+    new_ids = loaded.add(
+        [make_chunk("new text", 9, doc_id="z")], embedder.embed_texts(["new text"])
+    )
     assert new_ids[0] >= 4
 
 

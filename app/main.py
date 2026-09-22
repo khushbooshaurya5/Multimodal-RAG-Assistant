@@ -16,16 +16,16 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 import streamlit as st  # noqa: E402
-
-from app.components.chat import render_history  # noqa: E402
-from app.components.sources import render_response  # noqa: E402
-from app.ui.sidebar import render_sidebar  # noqa: E402
-from app.ui.state import clear_history, get_service, init_state  # noqa: E402
 from src.audio.loader import AudioDecodeError  # noqa: E402
 from src.audio.transcriber import AudioDisabledError  # noqa: E402
 from src.models.errors import ModelUnavailableError  # noqa: E402
 from src.retrieval.filters import RetrievalFilters  # noqa: E402
 from src.vision.loader import ImageDecodeError, load_image_bytes  # noqa: E402
+
+from app.components.chat import render_history  # noqa: E402
+from app.components.sources import render_response  # noqa: E402
+from app.ui.sidebar import render_sidebar  # noqa: E402
+from app.ui.state import clear_history, get_service, init_state  # noqa: E402
 
 st.set_page_config(page_title="Multimodal RAG Assistant", page_icon="🧠", layout="wide")
 init_state()
@@ -33,19 +33,25 @@ service = get_service()
 controls = render_sidebar(service)
 
 st.title("🧠 Multimodal RAG Assistant")
-st.caption("Qwen-VL · Whisper · FAISS — ask with text, images or voice; answers cite retrieved evidence.")
+st.caption(
+    "Qwen-VL · Whisper · FAISS — ask with text, images or voice; answers cite retrieved evidence."
+)
 
 # --- Attachments for the next question --------------------------------------
 with st.container(border=True):
     col_img, col_audio = st.columns(2)
     with col_img:
         image_upload = st.file_uploader(
-            "Attach an image (optional)", type=["png", "jpg", "jpeg", "webp", "bmp"], key="query_image"
+            "Attach an image (optional)",
+            type=["png", "jpg", "jpeg", "webp", "bmp"],
+            key="query_image",
         )
         if image_upload is not None:
             st.image(image_upload, width=240)
     with col_audio:
-        audio_source = st.radio("Voice question (optional)", ["None", "Record", "Upload"], horizontal=True)
+        audio_source = st.radio(
+            "Voice question (optional)", ["None", "Record", "Upload"], horizontal=True
+        )
         audio_bytes: bytes | None = None
         audio_name = "recording.wav"
         if audio_source == "Record":
@@ -53,11 +59,15 @@ with st.container(border=True):
             if recorded is not None:
                 audio_bytes, audio_name = recorded.getvalue(), "recording.wav"
         elif audio_source == "Upload":
-            uploaded_audio = st.file_uploader("Upload audio", type=["wav", "mp3", "flac", "m4a", "ogg"], key="query_audio")
+            uploaded_audio = st.file_uploader(
+                "Upload audio", type=["wav", "mp3", "flac", "m4a", "ogg"], key="query_audio"
+            )
             if uploaded_audio is not None:
                 audio_bytes, audio_name = uploaded_audio.getvalue(), uploaded_audio.name
         if audio_bytes and service.transcriber is None:
-            st.warning("Speech recognition is disabled in this configuration; the audio will not be transcribed.")
+            st.warning(
+                "Speech recognition is disabled in this configuration; the audio will not be transcribed."
+            )
 
     cols = st.columns([1, 6])
     if cols[0].button("Clear chat"):
@@ -132,6 +142,12 @@ if typed is not None or submit_voice_only:
         render_response(response, show_prompt=controls.show_prompt)
 
     st.session_state["history"].append(
-        {"role": "user", "text": question, "image": pil_image, "image_name": image_name, "audio": audio_bytes}
+        {
+            "role": "user",
+            "text": question,
+            "image": pil_image,
+            "image_name": image_name,
+            "audio": audio_bytes,
+        }
     )
     st.session_state["history"].append({"role": "assistant", "response": response})

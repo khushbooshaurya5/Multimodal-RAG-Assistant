@@ -6,7 +6,6 @@ from pathlib import Path
 import httpx
 import pytest
 from PIL import Image
-
 from src.config import get_settings
 from src.schemas import ContentType, ImageAnalysis
 from src.vision import (
@@ -77,7 +76,9 @@ def test_metadata_fallback_is_flagged(fixtures_dir: Path):
     assert doc.extra["vision_fallback"] is True
     assert "NOT analysed" in doc.text
     assert "diagram.png" in doc.text
-    assert "No vision-language model" in processor.answer(load_image(fixtures_dir / "diagram.png"), "what?")
+    assert "No vision-language model" in processor.answer(
+        load_image(fixtures_dir / "diagram.png"), "what?"
+    )
 
 
 def test_factory_returns_metadata_backend_in_offline_settings():
@@ -120,16 +121,25 @@ def test_openai_compatible_analyzer_round_trip(fixtures_dir: Path, monkeypatch: 
 
     def handler(request: httpx.Request) -> httpx.Response:
         captured["payload"] = json.loads(request.content)
-        reply = {"image_kind": "diagram", "description": "boxes", "visible_text": "Input", "objects": ["box"]}
+        reply = {
+            "image_kind": "diagram",
+            "description": "boxes",
+            "visible_text": "Input",
+            "objects": ["box"],
+        }
         return httpx.Response(200, json={"choices": [{"message": {"content": json.dumps(reply)}}]})
 
     analyzer = OpenAICompatibleAnalyzer("http://mock/v1", model="qwen-vl", api_key="k")
-    analyzer.client._client = httpx.Client(base_url="http://mock/v1", transport=httpx.MockTransport(handler))
+    analyzer.client._client = httpx.Client(
+        base_url="http://mock/v1", transport=httpx.MockTransport(handler)
+    )
 
     analysis = analyzer.analyze(load_image(fixtures_dir / "diagram.png"), "diagram.png")
     assert analysis.image_kind == "diagram" and analysis.extracted_text == "Input"
     content = captured["payload"]["messages"][1]["content"]
-    assert content[0]["type"] == "image_url" and content[0]["image_url"]["url"].startswith("data:image/png;base64,")
+    assert content[0]["type"] == "image_url" and content[0]["image_url"]["url"].startswith(
+        "data:image/png;base64,"
+    )
     assert captured["payload"]["model"] == "qwen-vl"
 
 
@@ -138,7 +148,8 @@ def test_openai_compatible_error_surfaces_as_model_unavailable(fixtures_dir: Pat
 
     analyzer = OpenAICompatibleAnalyzer("http://mock/v1", model="m")
     analyzer.client._client = httpx.Client(
-        base_url="http://mock/v1", transport=httpx.MockTransport(lambda r: httpx.Response(503, text="down"))
+        base_url="http://mock/v1",
+        transport=httpx.MockTransport(lambda r: httpx.Response(503, text="down")),
     )
     with pytest.raises(ModelUnavailableError, match="503"):
         analyzer.analyze(load_image(fixtures_dir / "diagram.png"), "diagram.png")

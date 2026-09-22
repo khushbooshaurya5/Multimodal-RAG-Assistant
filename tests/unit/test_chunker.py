@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import pytest
-
 from src.schemas import ContentType, Document, TranscriptSegment
 from src.text import TextChunker, split_sentences
 
 
 def _doc(text: str, **kwargs) -> Document:
-    return Document(doc_id="doc1", source="doc.txt", content_type=ContentType.TEXT, text=text, **kwargs)
+    return Document(
+        doc_id="doc1", source="doc.txt", content_type=ContentType.TEXT, text=text, **kwargs
+    )
 
 
 def test_short_text_is_single_chunk():
@@ -78,8 +79,13 @@ def test_paged_document_keeps_page_numbers():
 
 
 def test_audio_segments_keep_time_span():
-    segments = [TranscriptSegment(text=f"segment {i} words", start=i * 2.0, end=i * 2.0 + 1.5) for i in range(12)]
-    doc = Document(doc_id="a1", source="talk.wav", content_type=ContentType.AUDIO, text="", segments=segments)
+    segments = [
+        TranscriptSegment(text=f"segment {i} words", start=i * 2.0, end=i * 2.0 + 1.5)
+        for i in range(12)
+    ]
+    doc = Document(
+        doc_id="a1", source="talk.wav", content_type=ContentType.AUDIO, text="", segments=segments
+    )
     chunks = TextChunker(chunk_size=60, chunk_overlap=0).chunk_document(doc)
     assert len(chunks) > 1
     assert chunks[0].metadata.start_time == 0.0

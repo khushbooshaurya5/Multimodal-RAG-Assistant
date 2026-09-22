@@ -4,7 +4,6 @@ from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
-
 from src.api.server import app
 
 
@@ -28,7 +27,10 @@ def test_ingest_query_and_delete(client: TestClient, fixtures_dir: Path):
     item = res.json()[0]
     assert item["error"] is None and item["num_chunks"] >= 1
 
-    res = client.post("/query", data={"question": "What do pooling layers do?", "top_k": 2, "include_prompt": "true"})
+    res = client.post(
+        "/query",
+        data={"question": "What do pooling layers do?", "top_k": 2, "include_prompt": "true"},
+    )
     assert res.status_code == 200
     body = res.json()
     assert body["citations"] and body["citations"][0]["source"] == "cnn_notes.md"

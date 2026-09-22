@@ -192,7 +192,9 @@ class FaissVectorStore:
             "created_at": self.created_at.isoformat(),
             "updated_at": self.updated_at.isoformat(),
         }
-        (directory / self.MANIFEST_FILE).write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+        (directory / self.MANIFEST_FILE).write_text(
+            json.dumps(manifest, indent=2), encoding="utf-8"
+        )
         logger.info("Saved vector store (%d vectors) to %s", len(self), directory)
 
     @classmethod
@@ -226,7 +228,11 @@ class FaissVectorStore:
         store._next_id = int(manifest.get("next_id", store._index.ntotal))
         store.created_at = datetime.fromisoformat(manifest["created_at"])
         store.updated_at = datetime.fromisoformat(manifest["updated_at"])
-        if expected_embedder and manifest.get("embedder_name") not in (None, "unknown", expected_embedder):
+        if expected_embedder and manifest.get("embedder_name") not in (
+            None,
+            "unknown",
+            expected_embedder,
+        ):
             raise VectorStoreError(
                 f"Index was built with embedder '{manifest['embedder_name']}' but the current "
                 f"embedder is '{expected_embedder}'. Rebuild the index or switch backends."

@@ -98,9 +98,13 @@ class WhisperTranscriber:
 
     def transcribe(self, clip: AudioClip, *, language: str | None = None) -> Transcript:
         if clip.sample_rate != TARGET_SAMPLE_RATE:
-            raise ValueError(f"Whisper expects {TARGET_SAMPLE_RATE} Hz audio, got {clip.sample_rate}")
+            raise ValueError(
+                f"Whisper expects {TARGET_SAMPLE_RATE} Hz audio, got {clip.sample_rate}"
+            )
         if clip.samples.size == 0:
-            return Transcript(text="", language=None, segments=[], duration_s=0.0, backend=self.name)
+            return Transcript(
+                text="", language=None, segments=[], duration_s=0.0, backend=self.name
+            )
 
         language = language or self.default_language or self.detect_language(clip)
         generate_kwargs: dict[str, Any] = {"task": "transcribe"}
@@ -124,7 +128,11 @@ class WhisperTranscriber:
         text = str(result.get("text", "")).strip()
         logger.info(
             "Transcribed %s (%.1fs, lang=%s): %d segments, %d chars",
-            clip.source, clip.duration_s, language, len(segments), len(text),
+            clip.source,
+            clip.duration_s,
+            language,
+            len(segments),
+            len(text),
         )
         return Transcript(
             text=text,
