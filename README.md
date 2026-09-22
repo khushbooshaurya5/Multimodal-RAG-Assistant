@@ -19,7 +19,7 @@ similarity scores and a heuristic evidence indicator, so the RAG process is tran
 retrieved sources with page numbers and similarity scores. (Screenshot uses the extractive
 fallback, hence the warning banner; with Qwen-VL configured the answer is model-generated.)*
 
-> **Live demo:** [huggingface.co/spaces/khushbooshaurya5/multimodal-rag-assistant](https://huggingface.co/spaces/khushbooshaurya5/multimodal-rag-assistant)
+> **Live demo:** [huggingface.co/spaces/khushbook1202/multimodal-rag-assistant](https://huggingface.co/spaces/khushbook1202/multimodal-rag-assistant)
 > (CPU Space; the first request after a cold start downloads the models). Deploy your own copy with
 > `python scripts/deploy_hf_space.py`, see [Deploying a live demo](#deploying-a-live-demo).
 
